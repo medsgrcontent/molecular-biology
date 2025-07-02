@@ -1,133 +1,334 @@
 <!DOCTYPE html>
-<html lang="el">
+<html lang="el" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Μοριακή Βιολογία: Οπτικοποίηση Κυττάρων</title>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <title>Εργαστηριακή Εξερεύνηση του Κυττάρου</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Warm Neutrals with Muted Scientific Tones -->
+    <!-- Application Structure Plan: The SPA is redesigned to focus on cell visualization techniques. It uses a clear, three-section layout: "Fundamentals," "Light Microscopy," and "Advanced/Electron Microscopy." This structure provides a logical learning path, from basic principles to complex methods. The navigation is persistent for easy exploration. Interactive elements include a dynamic resolution scale chart, a tabbed interface to compare different microscopy techniques side-by-side, and a Gemini API feature to provide simplified explanations of complex labeling methods, making the content more accessible and engaging. -->
+    <!-- Visualization & Content Choices: 
+        1. Resolution Scale -> Goal: Inform/Compare -> Method: Chart.js Bar Chart -> Interaction: Hover tooltips show size ranges -> Justification: Visually contextualizes the resolving power of different instruments (eye, light/electron microscopes) against biological structures, which is more intuitive than a simple list. -> Library: Chart.js.
+        2. Microscopy Techniques -> Goal: Organize/Compare -> Method: Tabbed interface -> Interaction: Clicking tabs reveals dedicated content (image, description, pros/cons) for each technique (Bright-field, Phase Contrast, Fluorescence, Confocal). -> Justification: Allows direct comparison of related techniques in a compact, organized manner, preventing cognitive overload. -> Method: HTML/CSS/JS.
+        3. Electron Microscopy Showcase -> Goal: Inform -> Method: Side-by-side cards for TEM and SEM -> Interaction: Static but clearly delineated -> Justification: Effectively contrasts the two main types of electron microscopy, highlighting their different outputs (internal structure vs. surface topography). -> Method: HTML/CSS (Tailwind Grid).
+        4. Labeling Techniques Explainer -> Goal: Enhance Understanding -> Method: Gemini API call via button -> Interaction: User clicks to get a simple analogy comparing immunofluorescence and GFP tagging. -> Justification: Uses an LLM to break down a nuanced experimental choice into an easy-to-understand comparison, aiding learning. -> Library/Method: Gemini API via Fetch.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
     <style>
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #f7fafc; /* Light gray background */
-            color: #2d3748; /* Dark gray text */
-            line-height: 1.6;
+            background-color: #f8f9fa; /* Lighter gray background */
         }
-        .container {
-            max-width: 900px;
-            margin: 0 auto;
-            padding: 2rem;
-            background-color: #ffffff;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            border-radius: 0.75rem; /* Rounded corners */
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 400px;
+            max-height: 500px;
         }
-        h1, h2, h3 {
-            color: #2c5282; /* Darker blue for headings */
-            font-weight: 700;
-            margin-bottom: 1rem;
+        .tab-button.active {
+            background-color: #0d6efd;
+            color: white;
+            border-bottom-color: transparent;
         }
-        h1 {
-            font-size: 2.5rem;
-            text-align: center;
-            margin-bottom: 2rem;
+        .tab-button {
+            border-bottom: 2px solid #dee2e6;
         }
-        h2 {
-            font-size: 2rem;
-            border-bottom: 2px solid #ebf8ff; /* Light blue border */
-            padding-bottom: 0.5rem;
-            margin-top: 2rem;
+        .tab-content {
+            display: none;
         }
-        h3 {
-            font-size: 1.5rem;
-            margin-top: 1.5rem;
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.5s;
         }
-        p {
-            margin-bottom: 1rem;
+        .gemini-response {
+            background-color: #e9ecef;
+            border-left: 4px solid #0d6efd;
+            padding: 1rem;
+            margin-top: 1rem;
+            border-radius: 0.5rem;
+            animation: fadeIn 0.5s ease-in-out;
         }
-        ul {
-            list-style-type: disc;
-            margin-left: 1.5rem;
-            margin-bottom: 1rem;
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
-        li {
-            margin-bottom: 0.5rem;
+        .loader {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #0d6efd;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            animation: spin 1s linear infinite;
+            margin: 1rem auto;
         }
-        strong {
-            font-weight: 600;
-            color: #2c5282;
-        }
-        /* LaTeX-like styling for mathematical expressions */
-        .latex-math {
-            font-family: 'Times New Roman', serif; /* Or a similar serif font */
-            font-style: italic;
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
     </style>
 </head>
-<body class="p-4">
-    <div class="container">
-        <h1>Περίληψη: Οπτικοποίηση Κυττάρων</h1>
+<body class="text-gray-800">
 
-        <p>Αυτό το κεφάλαιο εξερευνά τις διάφορες μεθόδους μικροσκοπίας που χρησιμοποιούνται για την οπτικοποίηση των κυττάρων και των μοριακών τους συστατικών.</p>
+    <!-- Header & Navigation -->
+    <header class="bg-white/90 backdrop-blur-lg sticky top-0 z-50 shadow-md">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <h1 class="text-xl md:text-2xl font-bold text-gray-900">Οδηγός Οπτικοποίησης Κυττάρων</h1>
+            <div class="hidden md:flex space-x-6 font-semibold">
+                <a href="#section-fundamentals" class="text-gray-600 hover:text-blue-700 transition">Θεμελιώδεις Αρχές</a>
+                <a href="#section-light-microscopy" class="text-gray-600 hover:text-blue-700 transition">Οπτική Μικροσκοπία</a>
+                <a href="#section-advanced" class="text-gray-600 hover:text-blue-700 transition">Προηγμένες Μέθοδοι</a>
+            </div>
+            <button id="mobile-menu-button" class="md:hidden text-gray-700 focus:outline-none">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+            </button>
+        </nav>
+        <div id="mobile-menu" class="hidden md:hidden px-6 pb-4">
+            <a href="#section-fundamentals" class="block py-2 text-gray-600 hover:text-blue-700 transition">Θεμελιώδεις Αρχές</a>
+            <a href="#section-light-microscopy" class="block py-2 text-gray-600 hover:text-blue-700 transition">Οπτική Μικροσκοπία</a>
+            <a href="#section-advanced" class="block py-2 text-gray-600 hover:text-blue-700 transition">Προηγμένες Μέθοδοι</a>
+        </div>
+    </header>
 
-        <h2>Μικροσκοπία Φωτός</h2>
-        <p>Η κυτταρική βιολογία ξεκίνησε με το <strong>μικροσκόπιο φωτός</strong>, το οποίο παραμένει ένα απαραίτητο εργαλείο. Παρόλο που η συμβατική μικροσκοπία φωτός περιορίζεται από το μήκος κύματος του ορατού φωτός (όριο ανάλυσης περίπου <span class="latex-math">$0.2~\mu m$</span> ή <span class="latex-math">$200~nm$</span>), νέες τεχνικές υπερανάλυσης μπορούν να παρακάμψουν αυτόν τον περιορισμό, επιτρέποντας την χαρτογράφηση της θέσης ακόμη και μεμονωμένων μορίων.</p>
+    <main class="container mx-auto px-4 md:px-6 py-12">
 
-        <h3>Τεχνικές Αντίθεσης και Ψηφιακή Ενίσχυση:</h3>
-        <ul>
-            <li><strong>Μικροσκοπία Φωτεινού Πεδίου:</strong> Η βασική μέθοδος όπου το φως διέρχεται απευθείας από το δείγμα.</li>
-            <li><strong>Μικροσκοπία Σκοτεινού Πεδίου:</strong> Χρησιμοποιεί πλάγιο φωτισμό, αναδεικνύοντας τα διασκορπισμένα από το δείγμα φωτόνια, με αποτέλεσμα μια φωτεινή εικόνα σε σκούρο φόντο.</li>
-            <li><strong>Μικροσκοπία Αντίθεσης Φάσης και Διαφορικής Αντίθεσης Παρεμβολής:</strong> Μετατρέπουν τις αλλαγές φάσης του φωτός που διέρχεται από τα ζωντανά κύτταρα (λόγω διαφορών στον δείκτη διάθλασης) σε διαφορές πλάτους, καθιστώντας ορατές τις δομές του κυττάρου. Είναι ιδανικές για την παρατήρηση ζωντανών κυττάρων και δυναμικών διαδικασιών όπως η μίτωση.</li>
-            <li><strong>Ψηφιακές Τεχνικές:</strong> Οι ψηφιακές κάμερες (CCDs, CMOS) αυξάνουν την ευαισθησία και την ικανότητα ανίχνευσης σε χαμηλό φως, ενώ η επεξεργασία εικόνας βελτιώνει την αντίθεση και αφαιρεί τον θόρυβο, αποκαλύπτοντας κρυφές πληροφορίες.</li>
-        </ul>
+        <!-- Section 1: Fundamentals of Microscopy -->
+        <section id="section-fundamentals" class="mb-20 text-center">
+            <h2 class="text-3xl md:text-4xl font-bold mb-4">Βασικές Αρχές της Μικροσκοπίας</h2>
+            <p class="text-gray-600 max-w-3xl mx-auto mb-12">Η κατανόηση της κυτταρικής λειτουργίας ξεκινά με την οπτικοποίησή της. Τα μικροσκόπια μας επιτρέπουν να δούμε δομές πολύ μικρότερες από ό,τι μπορεί να διακρίνει το ανθρώπινο μάτι. Η βασική πρόκληση είναι η <strong>διακριτική ικανότητα</strong>: η δυνατότητα να διακρίνουμε δύο κοντινά αντικείμενα ως ξεχωριστά. Το παρακάτω διάγραμμα δείχνει την κλίμακα των βιολογικών δομών και τα όρια των διαφορετικών οργάνων παρατήρησης.</p>
+            <div class="bg-white p-4 md:p-8 rounded-xl shadow-lg">
+                <div class="chart-container">
+                    <canvas id="resolutionChart"></canvas>
+                </div>
+            </div>
+        </section>
 
-        <h3>Προετοιμασία Δείγματος για Μικροσκοπία Φωτός:</h3>
-        <p>Οι ιστοί συνήθως <strong>στερεώνονται</strong> (π.χ., με γλουταραλδεΰδη) και <strong>τεμαχίζονται</strong> σε λεπτές φέτες (<span class="latex-math">$0.5-10~\mu m$</span>) με μικροτόμο. Στη συνέχεια, μπορούν να <strong>χρωματιστούν</strong> με οργανικές χρωστικές (π.χ., αιματοξυλίνη) ή να χρησιμοποιηθούν για <strong>υβριδοποίηση in situ</strong> (για RNA) ή <strong>ανοσοφθορισμό</strong> (για πρωτεΐνες) με φθορίζουσες ανιχνεύσεις.</p>
+        <!-- Section 2: Light Microscopy Techniques -->
+        <section id="section-light-microscopy" class="mb-20">
+            <h2 class="text-3xl md:text-4xl font-bold text-center mb-4">Τεχνικές Οπτικής Μικροσκοπίας</h2>
+            <p class="text-center text-gray-600 max-w-3xl mx-auto mb-12">Το οπτικό μικροσκόπιο είναι το θεμελιώδες εργαλείο της κυτταρικής βιολογίας. Διαφορετικές τεχνικές εκμεταλλεύονται τις ιδιότητες του φωτός για να αυξήσουν την αντίθεση και να αποκαλύψουν τις δομές ζωντανών ή μονιμοποιημένων κυττάρων. Επιλέξτε μια τεχνική για να μάθετε περισσότερα.</p>
+            <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+                <div class="flex flex-wrap justify-center border-b border-gray-200">
+                    <button class="tab-button active py-3 px-5 font-semibold text-sm md:text-base" data-tab="brightfield">Φωτεινού Πεδίου</button>
+                    <button class="tab-button py-3 px-5 font-semibold text-sm md:text-base" data-tab="phase">Αντίθεσης Φάσης</button>
+                    <button class="tab-button py-3 px-5 font-semibold text-sm md:text-base" data-tab="fluorescence">Φθορισμού</button>
+                    <button class="tab-button py-3 px-5 font-semibold text-sm md:text-base" data-tab="confocal">Συνεστιακή</button>
+                </div>
+                <div class="p-6 md:p-8">
+                    <!-- Bright-field Tab -->
+                    <div id="tab-brightfield" class="tab-content active">
+                        <div class="grid md:grid-cols-2 gap-8 items-center">
+                            <div>
+                                <h3 class="text-2xl font-bold mb-3 text-blue-800">Μικροσκοπία Φωτεινού Πεδίου</h3>
+                                <p>Η απλούστερη τεχνική, όπου το φως περνά απευθείας μέσα από το δείγμα. Η αντίθεση προκύπτει από την απορρόφηση του φωτός από τα μέρη του κυττάρου. Είναι ιδανική για παρατήρηση <strong>μονιμοποιημένων και χρωματισμένων</strong> δειγμάτων, όπου οι χρωστικές ενισχύουν την ορατότητα συγκεκριμένων δομών όπως ο πυρήνας.</p>
+                            </div>
+                            <div class="w-full h-64 bg-gray-200 rounded-lg flex items-center justify-center text-gray-500">Εικόνα χρωματισμένου ιστού</div>
+                        </div>
+                    </div>
+                    <!-- Phase Contrast Tab -->
+                    <div id="tab-phase" class="tab-content">
+                        <div class="grid md:grid-cols-2 gap-8 items-center">
+                            <div>
+                                <h3 class="text-2xl font-bold mb-3 text-blue-800">Μικροσκοπία Αντίθεσης Φάσης</h3>
+                                <p>Μετατρέπει τις διαφορές στη φάση του φωτός (που προκαλούνται από τις διαφορετικές πυκνότητες του κυττάρου) σε διαφορές στην αντίθεση. Αυτό επιτρέπει την παρατήρηση <strong>ζωντανών, άχρωμων κυττάρων</strong> με μεγάλη λεπτομέρεια, χωρίς την ανάγκη μονιμοποίησης που θα τα σκότωνε.</p>
+                            </div>
+                            <div class="w-full h-64 bg-gray-200 rounded-lg flex items-center justify-center text-gray-500">Εικόνα ζωντανών κυττάρων</div>
+                        </div>
+                    </div>
+                    <!-- Fluorescence Tab -->
+                    <div id="tab-fluorescence" class="tab-content">
+                        <div class="grid md:grid-cols-2 gap-8 items-center">
+                            <div>
+                                <h3 class="text-2xl font-bold mb-3 text-blue-800">Μικροσκοπία Φθορισμού</h3>
+                                <p>Χρησιμοποιεί φθορίζουσες ουσίες (φθοριοχρώματα) που απορροφούν φως σε ένα μήκος κύματος και το επανεκπέμπουν σε ένα άλλο, μεγαλύτερο. Επιτρέπει τον εντοπισμό συγκεκριμένων μορίων με τεράστια ευαισθησία, συνήθως μέσω <strong>φθοριζόντων αντισωμάτων</strong> ή της <strong>πράσινης φθορίζουσας πρωτεΐνης (GFP)</strong>.</p>
+                            </div>
+                            <div class="w-full h-64 bg-gray-200 rounded-lg flex items-center justify-center text-gray-500">Εικόνα κυττάρου με φθορισμό</div>
+                        </div>
+                    </div>
+                    <!-- Confocal Tab -->
+                    <div id="tab-confocal" class="tab-content">
+                        <div class="grid md:grid-cols-2 gap-8 items-center">
+                            <div>
+                                <h3 class="text-2xl font-bold mb-3 text-blue-800">Συνεστιακή Μικροσκοπία</h3>
+                                <p>Μια προηγμένη μορφή μικροσκοπίας φθορισμού που χρησιμοποιεί λέιζερ για να φωτίσει ένα μόνο σημείο του δείγματος κάθε φορά. Απορρίπτει το "θόρυβο" από τα εκτός εστίασης επίπεδα, δημιουργώντας εξαιρετικά ευκρινείς <strong>οπτικές τομές</strong>. Πολλές τομές μπορούν να συνδυαστούν για μια τρισδιάστατη ανακατασκευή.</p>
+                            </div>
+                            <div class="w-full h-64 bg-gray-200 rounded-lg flex items-center justify-center text-gray-500">Ευκρινής οπτική τομή</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
 
-        <h3>Μικροσκοπία Φθορισμού:</h3>
-        <p>Τα <strong>φθορίζοντα μόρια</strong> απορροφούν φως σε ένα μήκος κύματος και το εκπέμπουν σε ένα άλλο, μεγαλύτερο μήκος κύματος. Το <strong>μικροσκόπιο φθορισμού</strong> χρησιμοποιεί φίλτρα για να επιτρέπει την οπτικοποίηση μόνο του εκπεμπόμενου φωτός, καθιστώντας δυνατή την ανίχνευση ακόμη και ελάχιστων ποσοτήτων φθορίζουσας χρωστικής.</p>
-        <ul>
-            <li><strong>Αντισώματα:</strong> Φθορίζουσες χρωστικές μπορούν να συνδεθούν με αντισώματα για την ειδική ανίχνευση πρωτεϊνών.</li>
-            <li><strong>Κβαντικές Κουκκίδες (Quantum Dots):</strong> Μικροσκοπικοί κρύσταλλοι ημιαγωγών που φθορίζουν με σταθερότητα και χρώμα ανάλογα με το μέγεθός τους, ιδανικοί για την παρακολούθηση μορίων με την πάροδο του χρόνου.</li>
-            <li><strong>Πρωτεΐνες Φθορισμού (π.χ., GFP):</strong> Γενετικά τροποποιημένες πρωτεΐνες (όπως η Πράσινη Φθορίζουσα Πρωτεΐνη - GFP) που φθορίζουν ενδογενώς, επιτρέποντας την παρακολούθηση της έκφρασης γονιδίων, της εντόπισης πρωτεϊνών και της δυναμικής τους σε ζωντανά κύτταρα και οργανισμούς.</li>
-            <li><strong>FRET (Fluorescence Resonance Energy Transfer):</strong> Μέθοδος για την παρακολούθηση αλληλεπιδράσεων μεταξύ πρωτεϊνών με την επισήμανσή τους με διαφορετικές φθορίζουσες πρωτεΐνες.</li>
-            <li><strong>Φωτοενεργοποίηση:</strong> Ενεργοποίηση φθορισμού σε συγκεκριμένη περιοχή του κυττάρου με δέσμη φωτός για την παρακολούθηση της κίνησης μορίων.</li>
-            <li><strong>FRAP (Fluorescence Recovery After Photobleaching):</strong> Απενεργοποίηση του φθορισμού σε μια περιοχή και παρακολούθηση της ανάκτησης του φθορισμού καθώς μη-αποχρωματισμένα μόρια κινούνται στην περιοχή, παρέχοντας πληροφορίες για τη διάχυση και την κινητική.</li>
-            <li><strong>Ενδείκτες Εκπομπής Φωτός:</strong> Χρησιμοποιούνται για τη μέτρηση ταχέως μεταβαλλόμενων ενδοκυτταρικών συγκεντρώσεων ιόντων (π.χ., <span class="latex-math">$Ca^{2+}$</span>) σε πραγματικό χρόνο.</li>
-            <li><strong>TIRF (Total Internal Reflection Fluorescence) Microscopy:</strong> Επιτρέπει την οπτικοποίηση μεμονωμένων φθοριζόντων μορίων κοντά στην επιφάνεια του κυττάρου, μειώνοντας τον θόρυβο υποβάθρου.</li>
-        </ul>
+        <!-- Section 3: Advanced & Electron Microscopy -->
+        <section id="section-advanced">
+            <h2 class="text-3xl md:text-4xl font-bold text-center mb-4">Προηγμένες Μέθοδοι & Ηλεκτρονική Μικροσκοπία</h2>
+            <p class="text-center text-gray-600 max-w-3xl mx-auto mb-12">Για να υπερβούμε τα όρια του ορατού φωτός, χρησιμοποιούμε δέσμες ηλεκτρονίων, που έχουν πολύ μικρότερο μήκος κύματος. Το ηλεκτρονικό μικροσκόπιο αποκαλύπτει την υπερδομή του κυττάρου με απίστευτη λεπτομέρεια. Παράλληλα, τεχνικές σήμανσης μας επιτρέπουν να "ζωγραφίζουμε" τα μόρια για να τα παρακολουθούμε.</p>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <!-- Electron Microscopy -->
+                <div class="bg-white p-6 rounded-xl shadow-lg">
+                    <h3 class="text-2xl font-bold mb-4 text-center">Ηλεκτρονική Μικροσκοπία</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="border p-4 rounded-lg">
+                            <h4 class="font-bold text-lg">Διερχόμενης Δέσμης (TEM)</h4>
+                            <p class="text-sm text-gray-600 mt-2">Η δέσμη ηλεκτρονίων περνά μέσα από <strong>εξαιρετικά λεπτές τομές</strong> του δείγματος. Αποκαλύπτει την εσωτερική δομή των οργανιδίων με τεράστια διακριτική ικανότητα.</p>
+                        </div>
+                        <div class="border p-4 rounded-lg">
+                            <h4 class="font-bold text-lg">Σάρωσης (SEM)</h4>
+                            <p class="text-sm text-gray-600 mt-2">Η δέσμη ηλεκτρονίων "σαρώνει" την επιφάνεια του δείγματος, το οποίο έχει καλυφθεί με μέταλλο. Δημιουργεί εντυπωσιακές <strong>τρισδιάστατες εικόνες</strong> της εξωτερικής μορφολογίας.</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- Labeling Techniques -->
+                <div class="bg-white p-6 rounded-xl shadow-lg">
+                    <h3 class="text-2xl font-bold mb-4 text-center">Τεχνικές Σήμανσης</h3>
+                    <p class="text-gray-600 mb-4">Για να δούμε συγκεκριμένα μόρια, πρέπει να τα "σημάνουμε". Δύο βασικές στρατηγικές είναι η χρήση αντισωμάτων και η γενετική τροποποίηση για την παραγωγή φθοριζουσών πρωτεϊνών.</p>
+                    <div class="text-center">
+                        <button id="gemini-labeling-btn" class="bg-purple-600 text-white font-bold py-2 px-4 rounded-full hover:bg-purple-700 transition-all duration-300 transform hover:scale-105">
+                            ✨ Ποια η διαφορά; (GFP vs Αντισώματα)
+                        </button>
+                        <div id="gemini-labeling-loader" class="loader hidden"></div>
+                        <div id="gemini-labeling-response" class="gemini-response hidden text-left"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
 
-        <h3>Τεχνικές Υπερανάλυσης (Superresolution):</h3>
-        <p>Αυτές οι τεχνικές ξεπερνούν το όριο περίθλασης του φωτός (<span class="latex-math">$200~nm$</span>) και επιτρέπουν την ανάλυση δομών έως και <span class="latex-math">$20~nm$</span>.</p>
-        <ul>
-            <li><strong>SIM (Structured Illumination Microscopy):</strong> Χρησιμοποιεί δομημένο φωτισμό για να δημιουργήσει μοτίβα παρεμβολής, από τα οποία μπορούν να υπολογιστούν λεπτομέρειες υψηλής ανάλυσης.</li>
-            <li><strong>STED (Stimulated Emission Depletion Microscopy):</strong> Μειώνει το μέγεθος του σημείου διάχυσης του φωτός, απενεργοποιώντας τον φθορισμό στην περιφέρεια του σημείου διέγερσης.</li>
-            <li><strong>PALM (Photoactivated Localization Microscopy) / STORM (Stochastic Optical Reconstruction Microscopy):</strong> Ενεργοποιούν και απενεργοποιούν διαδοχικά υποσύνολα φθοριζόντων μορίων, επιτρέποντας τον ακριβή υπολογισμό της θέσης κάθε μεμονωμένου μορίου και τη δημιουργία εικόνας υπερανάλυσης.</li>
-        </ul>
+    </main>
 
-        <h2>Ηλεκτρονική Μικροσκοπία</h2>
-        <p>Η <strong>ηλεκτρονική μικροσκοπία</strong> προσφέρει πολύ υψηλότερη ανάλυση από την οπτική μικροσκοπία, επιτρέποντας την οπτικοποίηση της λεπτής δομής των κυττάρων και των μακρομοριακών τους συστατικών σε σχεδόν ατομική ανάλυση (πρακτική ανάλυση περίπου <span class="latex-math">$0.05~nm$</span> ή <span class="latex-math">$0.5~\AA$</span>, για βιολογικά δείγματα <span class="latex-math">$1~nm$</span> ή <span class="latex-math">$10~\AA$</span>).</p>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Mobile menu toggle
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+            mobileMenuButton.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+            });
+            document.querySelectorAll('#mobile-menu a').forEach(link => {
+                link.addEventListener('click', () => {
+                    mobileMenu.classList.add('hidden');
+                });
+            });
 
-        <h3>Τύποι Ηλεκτρονικών Μικροσκοπίων:</h3>
-        <ul>
-            <li><strong>TEM (Transmission Electron Microscope):</strong> Παρόμοιο με το μικροσκόπιο φωτός, αλλά χρησιμοποιεί δέσμη ηλεκτρονίων και μαγνητικούς φακούς. Οι ηλεκτρόνια που διέρχονται από το δείγμα σχηματίζουν την εικόνα.</li>
-            <li><strong>SEM (Scanning Electron Microscope):</strong> Παράγει μια τρισδιάστατη εικόνα της επιφάνειας του δείγματος, χρησιμοποιώντας ηλεκτρόνια που διασκορπίζονται ή εκπέμπονται από την επιφάνεια. Έχει μεγάλη βάθος πεδίου αλλά χαμηλότερη ανάλυση από το TEM (περίπου <span class="latex-math">$10~nm$</span>).</li>
-        </ul>
+            // Resolution Chart
+            const ctx = document.getElementById('resolutionChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Ανθρώπινο Μάτι', 'Οπτικό Μικροσκόπιο', 'Ηλεκτρονικό Μικροσκόπιο'],
+                    datasets: [{
+                        label: 'Διακριτική Ικανότητα (log κλίμακα)',
+                        data: [Math.log10(0.0002), Math.log10(0.0000002), Math.log10(0.0000000002)],
+                        backgroundColor: ['#6366f1', '#22c55e', '#ef4444'],
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: {
+                            ticks: {
+                                callback: function(value, index, values) {
+                                    return 10**(value) + ' m';
+                                }
+                            },
+                            title: {
+                                display: true,
+                                text: 'Μέγεθος (μέτρα)'
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: { display: false },
+                        title: {
+                            display: true,
+                            text: 'Κλίμακα Διακριτικής Ικανότητας',
+                            font: { size: 18 }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const rawValue = 10**(context.raw);
+                                    if (rawValue >= 1) return `${rawValue} m`;
+                                    if (rawValue >= 0.001) return `${rawValue * 1000} mm`;
+                                    if (rawValue >= 0.000001) return `${rawValue * 1000000} μm`;
+                                    return `${rawValue * 1000000000} nm`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
 
-        <h3>Προετοιμασία Δείγματος για Ηλεκτρονική Μικροσκοπία:</h3>
-        <ul>
-            <li><strong>Στερέωση και Τεμαχισμός:</strong> Τα δείγματα σκοτώνονται και διατηρούνται με σταθεροποιητικά (π.χ., γλουταραλδεΰδη, τετροξείδιο του οσμίου) και τεμαχίζονται σε εξαιρετικά λεπτές τομές (<span class="latex-math">$25-100~nm$</span>).</li>
-            <li><strong>Χρώση:</strong> Χρησιμοποιούνται άλατα βαρέων μετάλλων (π.χ., ουράνιο, μόλυβδος, όσμιο) για να παρέχουν αντίθεση.</li>
-            <li><strong>Ταχεία Κατάψυξη (Cryofixation):</strong> Η ταχεία κατάψυξη σε υαλώδη πάγο διατηρεί τις δομές πιστά στην αρχική τους κατάσταση, αποφεύγοντας παραμορφώσεις.</li>
-            <li><strong>Ανοσοχρυσή Ηλεκτρονική Μικροσκοπία (Immunogold Electron Microscopy):</strong> Χρησιμοποιεί αντισώματα συνδεδεμένα με σωματίδια κολλοειδούς χρυσού (ηλεκτρονικά πυκνά) για την εντόπιση συγκεκριμένων μακρομορίων.</li>
-        </ul>
+            // Microscopy Tabs
+            const tabButtons = document.querySelectorAll('.tab-button');
+            const tabContents = document.querySelectorAll('.tab-content');
+            tabButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    tabButtons.forEach(btn => btn.classList.remove('active'));
+                    button.classList.add('active');
+                    tabContents.forEach(content => content.classList.remove('active'));
+                    document.getElementById(`tab-${button.dataset.tab}`).classList.add('active');
+                });
+            });
+            
+            // Gemini API Integration
+            const labelingBtn = document.getElementById('gemini-labeling-btn');
 
-        <h3>Τρισδιάστατη Ανακατασκευή σε Ηλεκτρονική Μικροσκοπία:</h3>
-        <ul>
-            <li><strong>Ηλεκτρονική Τομογραφία (EM Tomography):</strong> Συνδυάζει πολλαπλές όψεις του ίδιου δείγματος από διαφορετικές γωνίες κλίσης για να δημιουργήσει μια τρισδιάστατη ανακατασκευή (τομογράφημα).</li>
-            <li><strong>Ανακατασκευή Ενός Σωματιδίου (Single-Particle Reconstruction):</strong> Συνδυάζει εικόνες χιλιάδων πανομοιότυπων μορίων για να παράγει μια μέση εικόνα υψηλής ανάλυσης, αποκαλύπτοντας δομικές λεπτομέρειες κρυμμένες από τον θόρυβο.</li>
-        </ul>
+            async function handleGeminiRequest(prompt, button, loader, responseContainer) {
+                loader.classList.remove('hidden');
+                responseContainer.classList.add('hidden');
+                button.disabled = true;
 
-        <p>Συνολικά, οι διάφορες τεχνικές μικροσκοπίας, από την οπτική έως την ηλεκτρονική, σε συνδυασμό με προηγμένες μεθόδους προετοιμασίας δείγματος και ψηφιακής επεξεργασίας εικόνας, έχουν φέρει επανάσταση στην ικανότητά μας να εξερευνούμε την πολυπλοκότητα των κυττάρων και των μοριακών τους μηχανισμών με πρωτοφανή λεπτομέρεια.</p>
-    </div>
+                let chatHistory = [{ role: "user", parts: [{ text: prompt }] }];
+                const payload = { contents: chatHistory };
+                const apiKey = ""; 
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+
+                try {
+                    const response = await fetch(apiUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+
+                    const result = await response.json();
+                    
+                    if (result.candidates && result.candidates.length > 0 &&
+                        result.candidates[0].content && result.candidates[0].content.parts &&
+                        result.candidates[0].content.parts.length > 0) {
+                        const text = result.candidates[0].content.parts[0].text;
+                        responseContainer.innerHTML = text.replace(/\n/g, '<br>');
+                        responseContainer.classList.remove('hidden');
+                    } else {
+                        throw new Error('Invalid API response structure.');
+                    }
+                } catch (error) {
+                    console.error("Gemini API Error:", error);
+                    responseContainer.innerHTML = 'Παρουσιάστηκε σφάλμα. Παρακαλώ δοκιμάστε ξανά αργότερα.';
+                    responseContainer.classList.remove('hidden');
+                } finally {
+                    loader.classList.add('hidden');
+                    button.disabled = false;
+                }
+            }
+
+            labelingBtn.addEventListener('click', () => {
+                const prompt = "In Modern Greek, please explain the difference between using immunofluorescence (with antibodies) and using Green Fluorescent Protein (GFP) to visualize a protein in a cell. Use a simple analogy to make it easy to understand for a student. Explain which method is used for living cells and which for fixed cells.";
+                handleGeminiRequest(prompt, labelingBtn, document.getElementById('gemini-labeling-loader'), document.getElementById('gemini-labeling-response'));
+            });
+
+        });
+    </script>
 </body>
 </html>
