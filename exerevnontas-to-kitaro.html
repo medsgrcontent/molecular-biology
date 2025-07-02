@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="el" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Εξερευνώντας το Κύτταρο: Ένα Διαδραστικό Ταξίδι</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc; /* slate-50 */
+        }
+        .active-nav {
+            background-color: #e0f2fe; /* sky-100 */
+            color: #0c4a6e; /* sky-900 */
+            font-weight: 700;
+        }
+        .prose h2 {
+            font-size: 1.875rem;
+            font-weight: 700;
+            color: #1e3a8a; /* blue-900 */
+            border-bottom: 2px solid #93c5fd; /* blue-300 */
+            padding-bottom: 0.5rem;
+            margin-top: 2.5rem;
+        }
+        .prose h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #1e40af; /* blue-800 */
+            margin-top: 2rem;
+        }
+        .prose p, .prose li {
+            font-size: 1.125rem;
+            line-height: 1.75;
+            color: #334155; /* slate-700 */
+        }
+        .prose strong {
+            color: #1e40af; /* blue-800 */
+        }
+        .prose figure {
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+        }
+        .prose figcaption {
+            text-align: center;
+            font-style: italic;
+            color: #475569; /* slate-600 */
+            margin-top: 0.5rem;
+        }
+        .prose .interactive-term {
+            color: #2563eb; /* blue-600 */
+            font-weight: 600;
+            cursor: pointer;
+            border-bottom: 2px dotted #93c5fd; /* blue-300 */
+            transition: color 0.3s, background-color 0.3s;
+        }
+        .prose .interactive-term:hover {
+            background-color: #dbeafe; /* blue-100 */
+        }
+        #glossary-tooltip {
+            position: absolute;
+            background-color: #1e293b; /* slate-800 */
+            color: white;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            max-width: 350px;
+            z-index: 50;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s, visibility 0.3s;
+            font-size: 0.95rem;
+        }
+        #glossary-tooltip.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+        .custom-svg-container {
+            background-color: #ffffff;
+            border: 1px solid #e2e8f0; /* slate-200 */
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body class="text-slate-800">
+
+    <!-- Mobile Header -->
+    <header class="md:hidden sticky top-0 bg-white/80 backdrop-blur-lg shadow-md z-40">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <h1 class="text-lg font-bold text-sky-800">Εξερευνώντας το Κύτταρο</h1>
+            <button id="mobile-menu-button" class="p-2 rounded-md text-slate-600 hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-sky-500">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+            </button>
+        </div>
+    </header>
+
+    <div class="flex">
+        <!-- Sidebar Navigation -->
+        <aside id="sidebar" class="fixed top-0 left-0 w-64 h-full bg-slate-100 border-r border-slate-200 z-30 transform -translate-x-full md:translate-x-0 transition-transform duration-300 ease-in-out">
+            <div class="p-5 border-b border-slate-200">
+                <h1 class="text-xl font-bold text-sky-800">Εξερευνώντας το Κύτταρο</h1>
+                <p class="text-sm text-slate-500 mt-1">Ένα Διαδραστικό Ταξίδι</p>
+            </div>
+            <nav id="table-of-contents" class="p-3">
+                <ul class="space-y-1">
+                    <li><a href="#intro" class="block px-4 py-2 rounded-md text-slate-700 hover:bg-sky-100 hover:text-sky-800 transition-colors">1. Εισαγωγή</a></li>
+                    <li><a href="#nucleus" class="block px-4 py-2 rounded-md text-slate-700 hover:bg-sky-100 hover:text-sky-800 transition-colors">2. Ο Πυρήνας</a></li>
+                    <li><a href="#membrane_structure" class="block px-4 py-2 rounded-md text-slate-700 hover:bg-sky-100 hover:text-sky-800 transition-colors">3. Δομή Μεμβρανών</a></li>
+                    <li><a href="#endomembrane" class="block px-4 py-2 rounded-md text-slate-700 hover:bg-sky-100 hover:text-sky-800 transition-colors">4. Το Ενδομεμβρανικό Σύστημα</a></li>
+                    <li><a href="#transport" class="block px-4 py-2 rounded-md text-slate-700 hover:bg-sky-100 hover:text-sky-800 transition-colors">5. Διαδρομές Μεταφοράς</a></li>
+                    <li><a href="#recycling" class="block px-4 py-2 rounded-md text-slate-700 hover:bg-sky-100 hover:text-sky-800 transition-colors">6. Ανακύκλωση & Καθαρισμός</a></li>
+                    <li><a href="#conclusion" class="block px-4 py-2 rounded-md text-slate-700 hover:bg-sky-100 hover:text-sky-800 transition-colors">7. Επίλογος</a></li>
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="md:ml-64 w-full min-h-screen p-4 md:p-10">
+            <div class="prose max-w-none mx-auto">
+                <section id="intro">
+                    <h2>1. Εισαγωγή: Ο Κόσμος του Ευκαρυωτικού Κυττάρου</h2>
+                    <p>Καλώς ήρθατε σε ένα ταξίδι στην καρδιά της ζωής: το ευκαρυωτικό κύτταρο. Σε αντίθεση με τα απλούστερα προκαρυωτικά κύτταρα, τα ευκαρυωτικά κύτταρα, από τα οποία αποτελούμαστε, διαθέτουν μια εκπληκτική εσωτερική οργάνωση. Είναι σαν μια πολυσύχναστη πόλη, με εξειδικευμένες συνοικίες —τα <span class="interactive-term" data-term="organelle">οργανίδια</span>— όπου κάθε ένα επιτελεί συγκεκριμένες λειτουργίες. Αυτή η διαμερισματοποίηση επιτρέπει στο κύτταρο να εκτελεί χιλιάδες χημικές αντιδράσεις ταυτόχρονα, με τάξη και αποτελεσματικότητα.</p>
+                    <p>Σε αυτό το διαδραστικό εγχειρίδιο, θα εξερευνήσουμε κρίσιμα συστήματα αυτής της κυτταρικής πόλης. Θα ξεκινήσουμε από το κέντρο διοίκησης, τον <strong>Πυρήνα</strong>, και τη θεμελιώδη <strong>Δομή των Μεμβρανών</strong> που ορίζουν τα όρια του κυττάρου και των οργανιδίων του. Στη συνέχεια, θα περιηγηθούμε στο <strong>Ενδομεμβρανικό Σύστημα</strong>, ένα δίκτυο που λειτουργεί ως γραμμή παραγωγής και διανομής. Θα δούμε πώς το κύτταρο επικοινωνεί, τρέφεται και ανακυκλώνει τα υλικά του, μέσα από τις δυναμικές διαδικασίες της <span class="interactive-term" data-term="exocytosis">εξωκυττάρωσης</span> και της <span class="interactive-term" data-term="endocytosis">ενδοκυττάρωσης</span>. Ετοιμαστείτε να ανακαλύψετε την απίστευτη πολυπλοκότητα και την κομψή οργάνωση που κρύβεται μέσα σε κάθε κύτταρό μας.</p>
+                    <figure class="custom-svg-container">
+                        <svg viewBox="0 0 400 280" xmlns="http://www.w3.org/2000/svg">
+                            <defs>
+                                <radialGradient id="nucleusGrad" cx="50%" cy="50%" r="50%" fx="50%" fy="50%">
+                                    <stop offset="0%" style="stop-color:#bfdbfe; stop-opacity:1" />
+                                    <stop offset="100%" style="stop-color:#60a5fa; stop-opacity:1" />
+                                </radialGradient>
+                                <radialGradient id="cellGrad" cx="50%" cy="50%" r="70%">
+                                    <stop offset="0%" style="stop-color:#fef3c7; stop-opacity:1" />
+                                    <stop offset="100%" style="stop-color:#fde68a; stop-opacity:1" />
+                                </radialGradient>
+                            </defs>
+                            <!-- Cell Body -->
+                            <path d="M 20,140 C 20,60 100,20 200,20 C 300,20 380,60 380,140 C 380,220 300,260 200,260 C 100,260 20,220 20,140 Z" fill="url(#cellGrad)" stroke="#facc15" stroke-width="3"/>
+                            <!-- Nucleus -->
+                            <circle cx="130" cy="140" r="50" fill="url(#nucleusGrad)" stroke="#3b82f6" stroke-width="2"/>
+                            <circle cx="130" cy="140" r="15" fill="#93c5fd" opacity="0.7"/>
+                            <text x="130" y="205" font-size="12" text-anchor="middle" fill="#1e3a8a" font-weight="bold">Πυρήνας</text>
+                            <!-- ER -->
+                            <path d="M 180,120 C 220,100 260,120 300,100 C 340,80 320,140 300,140" fill="none" stroke="#a78bfa" stroke-width="4" stroke-linecap="round"/>
+                            <path d="M 180,140 C 220,120 260,140 300,120 C 340,100 320,160 300,160" fill="none" stroke="#a78bfa" stroke-width="4" stroke-linecap="round"/>
+                            <path d="M 180,160 C 220,140 260,160 300,140 C 340,120 320,180 300,180" fill="none" stroke="#a78bfa" stroke-width="4" stroke-linecap="round"/>
+                             <text x="250" y="90" font-size="12" text-anchor="middle" fill="#5b21b6" font-weight="bold">Ενδοπλασμ. Δίκτυο</text>
+                            <!-- Golgi -->
+                            <path d="M 220,200 Q 250,190 280,200" fill="none" stroke="#f472b6" stroke-width="4" stroke-linecap="round"/>
+                            <path d="M 225,210 Q 250,200 275,210" fill="none" stroke="#f472b6" stroke-width="4" stroke-linecap="round"/>
+                            <path d="M 230,220 Q 250,210 270,220" fill="none" stroke="#f472b6" stroke-width="4" stroke-linecap="round"/>
+                            <text x="250" y="238" font-size="12" text-anchor="middle" fill="#be185d" font-weight="bold">Golgi</text>
+                            <!-- Lysosome -->
+                            <circle cx="330" cy="210" r="12" fill="#fca5a5" stroke="#dc2626" stroke-width="1.5"/>
+                            <text x="330" y="232" font-size="10" text-anchor="middle" fill="#991b1b" font-weight="bold">Λυσόσωμα</text>
+                            <!-- Vesicle -->
+                            <circle cx="280" cy="180" r="8" fill="#6ee7b7" stroke="#047857" stroke-width="1.5"/>
+                             <text x="280" y="170" font-size="10" text-anchor="middle" fill="#065f46" font-weight="bold">Κυστίδιο</text>
+                        </svg>
+                        <figcaption>Σχηματική αναπαράσταση ενός ευκαρυωτικού κυττάρου, που δείχνει τον πυρήνα και τα κύρια οργανίδια του ενδομεμβρανικού συστήματος.</figcaption>
+                    </figure>
+                </section>
+
+                <section id="nucleus">
+                    <h2>2. Ο Πυρήνας: Το Κέντρο Ελέγχου</h2>
+                    <p>Ο πυρήνας είναι το πιο ευδιάκριτο οργανίδιο στα ευκαρυωτικά κύτταρα. Η ύπαρξή του είναι το θεμελιώδες χαρακτηριστικό που διαχωρίζει τα ευκαρυωτικά από τα προκαρυωτικά κύτταρα. Ο πυρήνας επιτελεί δύο βασικές λειτουργίες: αφενός, φιλοξενεί το γενετικό υλικό του κυττάρου, το DNA, οργανωμένο σε δομές που ονομάζονται <span class="interactive-term" data-term="chromosome">χρωμοσώματα</span>. Αφετέρου, λειτουργεί ως το κέντρο ελέγχου του κυττάρου, ρυθμίζοντας τη <span class="interactive-term" data-term="gene_expression">γονιδιακή έκφραση</span>, δηλαδή ποιες πρωτεΐνες θα παραχθούν και πότε.</p>
+                    
+                    <h3>Η Πυρηνική Μεμβράνη και οι Πυρηνικοί Πόροι</h3>
+                    <p>Ο πυρήνας περιβάλλεται από τον <strong>πυρηνικό φάκελο</strong>, μια διπλή μεμβράνη που τον διαχωρίζει από το κυτταρόπλασμα. Αυτός ο διαχωρισμός είναι κρίσιμος, καθώς επιτρέπει στο κύτταρο να ρυθμίζει την πρόσβαση στο DNA και να ελέγχει με ακρίβεια τις διαδικασίες της αντιγραφής και της μεταγραφής. Η εξωτερική πυρηνική μεμβράνη συνδέεται απευθείας με το <span class="interactive-term" data-term="er">Ενδοπλασματικό Δίκτυο</span>, δημιουργώντας μια συνέχεια στο ενδομεμβρανικό σύστημα.</p>
+                    <p>Η επικοινωνία μεταξύ του πυρήνα και του κυτταροπλάσματος δεν είναι ερμητικά κλειστή. Ο πυρηνικός φάκελος διαπερνάται από χιλιάδες <strong>πυρηνικούς πόρους</strong>. Αυτοί δεν είναι απλές τρύπες, αλλά πολύπλοκες δομές πρωτεϊνών (νουκλεοπορίνες) που λειτουργούν ως αυστηρά ελεγχόμενες πύλες. Μικρά μόρια, όπως ιόντα και νουκλεοτίδια, μπορούν να περάσουν ελεύθερα. Αντίθετα, μεγάλα μόρια, όπως οι <span class="interactive-term" data-term="protein">πρωτεΐνες</span> και το RNA, χρειάζονται ειδικά "διαβατήρια" για να περάσουν.</p>
+                    
+                    <figure class="custom-svg-container">
+                        <svg viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg">
+                            <rect x="0" y="80" width="300" height="10" fill="#93c5fd"/>
+                            <rect x="0" y="110" width="300" height="10" fill="#93c5fd"/>
+                            <text x="10" y="75" font-size="10" fill="#1e40af">Εξωτερική Μεμβράνη</text>
+                            <text x="10" y="135" font-size="10" fill="#1e40af">Εσωτερική Μεμβράνη</text>
+                            <text x="200" y="40" font-size="12" fill="#334155" font-weight="bold">Κυτταρόπλασμα</text>
+                            <text x="200" y="170" font-size="12" fill="#334155" font-weight="bold">Πυρηνόπλασμα</text>
+                            
+                            <!-- Nuclear Pore Complex -->
+                            <g transform="translate(150, 100)">
+                                <circle cx="0" cy="0" r="45" fill="#bfdbfe" stroke="#3b82f6" stroke-width="1"/>
+                                <circle cx="0" cy="0" r="15" fill="#fff"/>
+                                <!-- Spokes -->
+                                <line x1="0" y1="-40" x2="0" y2="-15" stroke="#3b82f6" stroke-width="3"/>
+                                <line x1="0" y1="15" x2="0" y2="40" stroke="#3b82f6" stroke-width="3"/>
+                                <line x1="-40" y1="0" x2="-15" y2="0" stroke="#3b82f6" stroke-width="3"/>
+                                <line x1="15" y1="0" x2="40" y2="0" stroke="#3b82f6" stroke-width="3"/>
+                                <line x1="-28" y1="-28" x2="-11" y2="-11" stroke="#3b82f6" stroke-width="3"/>
+                                <line x1="11" y1="11" x2="28" y2="28" stroke="#3b82f6" stroke-width="3"/>
+                                <line x1="-28" y1="28" x2="-11" y2="11" stroke="#3b82f6" stroke-width="3"/>
+                                <line x1="11" y1="-11" x2="28" y2="-28" stroke="#3b82f6" stroke-width="3"/>
+                                <text y="-50" text-anchor="middle" font-size="10" font-weight="bold" fill="#1e3a8a">Πυρηνικός Πόρος</text>
+                            </g>
+                        </svg>
+                        <figcaption>Διάγραμμα του πυρηνικού πόρου, της πύλης επικοινωνίας μεταξύ πυρήνα και κυτταροπλάσματος.</figcaption>
+                    </figure>
+
+                    <h3>Μεταφορά από και προς τον Πυρήνα</h3>
+                    <p>Η επιλεκτική μεταφορά μορίων μέσω των πυρηνικών πόρων είναι ζωτικής σημασίας. Οι πρωτεΐνες που χρειάζονται μέσα στον πυρήνα (π.χ. DNA πολυμεράσες, παράγοντες μεταγραφής) συντίθενται στο κυτταρόπλασμα και πρέπει να εισαχθούν. Αντίστοιχα, τα μόρια RNA που παράγονται στον πυρήνα πρέπει να εξαχθούν για να συμμετάσχουν στην πρωτεϊνοσύνθεση.</p>
+                    <ul>
+                        <li><strong>Πυρηνική Εισαγωγή:</strong> Οι πρωτεΐνες που προορίζονται για τον πυρήνα διαθέτουν μια ειδική αλληλουχία αμινοξέων, το <strong>Σήμα Πυρηνικής Εντόπισης (Nuclear Localization Signal - NLS)</strong>. Αυτό το σήμα αναγνωρίζεται από πρωτεΐνες-μεταφορείς, τις <span class="interactive-term" data-term="importin">εισαγωγίνες (importins)</span>, οι οποίες συνοδεύουν το "φορτίο" τους μέσα από τον πόρο.</li>
+                        <li><strong>Πυρηνική Εξαγωγή:</strong> Αντίστοιχα, μόρια που πρέπει να βγουν από τον πυρήνα, όπως το mRNA και το tRNA, διαθέτουν <strong>Σήματα Πυρηνικής Εξαγωγής (Nuclear Export Signals - NES)</strong>. Αυτά αναγνωρίζονται από τις <span class="interactive-term" data-term="exportin">εξαγωγίνες (exportins)</span>, οι οποίες τα οδηγούν προς το κυτταρόπλασμα.</li>
+                    </ul>
+                    <p>Όλη αυτή η κίνηση ρυθμίζεται από μια πρωτεΐνη που ονομάζεται <strong>Ran</strong>, η οποία λειτουργεί σαν μοριακός διακόπτης, εξασφαλίζοντας ότι η μεταφορά γίνεται προς τη σωστή κατεύθυνση και καταναλώνοντας ενέργεια (υπό μορφή GTP).</p>
+                </section>
+                
+                <section id="membrane_structure">
+                    <h2>3. Δομή Μεμβρανών: Το Ρευστό Μωσαϊκό</h2>
+                    <p>Όλες οι βιολογικές μεμβράνες, από την πλασματική μεμβράνη που περιβάλλει το κύτταρο μέχρι τις μεμβράνες των εσωτερικών οργανιδίων, μοιράζονται μια κοινή, θεμελιώδη δομή. Αποτελούνται από μια λεπτή μεμβράνη λιπιδίων και πρωτεϊνών, που συγκρατούνται κυρίως με μη ομοιοπολικές αλληλεπιδράσεις. Αυτή η δομή δεν είναι στατική· είναι δυναμική και ρευστή, επιτρέποντας στα συστατικά της να κινούνται και να αλληλεπιδρούν.</p>
+                    
+                    <h3>Η Λιπιδική Διπλοστοιβάδα</h3>
+                    <p>Ο σκελετός κάθε μεμβράνης είναι η <strong><span class="interactive-term" data-term="lipid_bilayer">λιπιδική διπλοστοιβάδα</span></strong>, η οποία σχηματίζεται αυθόρμητα σε υδατικό περιβάλλον. Αυτό οφείλεται στην <strong><span class="interactive-term" data-term="amphipathic">αμφίφιλη</span></strong> φύση των μορίων που την αποτελούν, κυρίως των φωσφολιπιδίων. Κάθε φωσφολιπίδιο έχει:</p>
+                    <ul>
+                        <li>Μια <strong>υδρόφιλη κεφαλή</strong> (πολική), που έλκεται από το νερό.</li>
+                        <li>Δύο <strong>υδρόφοβες ουρές</strong> (μη πολικές), που απωθούνται από το νερό.</li>
+                    </ul>
+                    <p>Αυτή η διπλή φύση οδηγεί τα φωσφολιπίδια να διατάσσονται σε δύο στρώματα, με τις υδρόφοβες ουρές στραμμένες προς το εσωτερικό, μακριά από το νερό, και τις υδρόφιλες κεφαλές στραμμένες προς το εξωτερικό, σε επαφή με το υδατικό περιβάλλον του κυτταροπλάσματος και του εξωκυττάριου χώρου. Η <strong>χοληστερόλη</strong>, ένα άλλο σημαντικό λιπίδιο, παρεμβάλλεται μεταξύ των φωσφολιπιδίων και ρυθμίζει τη ρευστότητα της μεμβράνης, εμποδίζοντάς την να γίνει υπερβολικά ρευστή ή υπερβολικά άκαμπτη.</p>
+                    
+                    <h3>Οι Πρωτεΐνες Μεμβράνης</h3>
+                    <p>Ενσωματωμένες ή συνδεδεμένες με τη λιπιδική διπλοστοιβάδα βρίσκονται οι <strong>πρωτεΐνες μεμβράνης</strong>, οι οποίες εκτελούν τις περισσότερες από τις εξειδικευμένες λειτουργίες της μεμβράνης. Διακρίνονται σε:</p>
+                    <ul>
+                        <li><strong>Διαμεμβρανικές (ή ενδογενείς) πρωτεΐνες:</strong> Διασχίζουν ολόκληρη τη διπλοστοιβάδα, μία ή περισσότερες φορές. Λειτουργούν συχνά ως <span class="interactive-term" data-term="channel">δίαυλοι</span> ή <span class="interactive-term" data-term="transporter">μεταφορείς</span> για τη μετακίνηση ουσιών, ή ως υποδοχείς για τη μεταγωγή σημάτων.</li>
+                        <li><strong>Περιφερικές (ή εξωγενείς) πρωτεΐνες:</strong> Συνδέονται στην επιφάνεια της μεμβράνης (είτε στην κυτταροπλασματική είτε στην εξωκυττάρια πλευρά) μέσω αλληλεπιδράσεων με άλλες πρωτεΐνες μεμβράνης, χωρίς να εισέρχονται στον υδρόφοβο πυρήνα της.</li>
+                    </ul>
+                    <p>Το μοντέλο αυτό, όπου οι πρωτεΐνες "επιπλέουν" σε μια θάλασσα λιπιδίων, είναι γνωστό ως το <strong>μοντέλο του ρευστού μωσαϊκού</strong>. Η ρευστότητα αυτή είναι κρίσιμη, καθώς επιτρέπει στις πρωτεΐνες να κινούνται πλευρικά, να αλληλεπιδρούν και να σχηματίζουν λειτουργικά συμπλέγματα.</p>
+                </section>
+
+                <section id="endomembrane">
+                    <h2>4. Το Ενδομεμβρανικό Σύστημα: Το Εργοστάσιο του Κυττάρου</h2>
+                    <p>Πέρα από τον πυρήνα, το κυτταρόπλασμα φιλοξενεί ένα δυναμικό και διασυνδεδεμένο δίκτυο μεμβρανών και οργανιδίων, γνωστό ως ενδομεμβρανικό σύστημα. Αυτό το σύστημα περιλαμβάνει το Ενδοπλασματικό Δίκτυο, το Σύμπλεγμα Golgi, τα λυσοσώματα και τα κυστίδια μεταφοράς. Λειτουργεί σαν μια καλά οργανωμένη γραμμή παραγωγής, όπου οι πρωτεΐνες και τα λιπίδια συντίθενται, τροποποιούνται, πακετάρονται και αποστέλλονται στους τελικούς τους προορισμούς.</p>
+
+                    <h3>Ενδοπλασματικό Δίκτυο (ΕΔ)</h3>
+                    <p>Το <strong>Ενδοπλασματικό Δίκτυο</strong> είναι ένα εκτεταμένο δίκτυο από σωληνίσκους και σάκους (δεξαμενές) που αποτελεί συνέχεια της εξωτερικής πυρηνικής μεμβράνης. Διακρίνεται σε δύο περιοχές με διαφορετική δομή και λειτουργία:</p>
+                    <ul>
+                        <li><strong>Αδρό Ενδοπλασματικό Δίκτυο (ΑΕΔ):</strong> Ονομάζεται "αδρό" γιατί η επιφάνειά του καλύπτεται από <span class="interactive-term" data-term="ribosome">ριβοσώματα</span>. Εδώ γίνεται η σύνθεση των πρωτεϊνών που είτε θα εκκριθούν από το κύτταρο, είτε θα ενσωματωθούν σε μεμβράνες, είτε θα καταλήξουν στα λυσοσώματα. Καθώς συντίθενται, οι πρωτεΐνες εισέρχονται στον αυλό του ΑΕΔ, όπου αρχίζει η αναδίπλωσή τους με τη βοήθεια πρωτεϊνών-συνοδών (chaperones) όπως η BiP, και οι πρώτες τροποποιήσεις, όπως η <span class="interactive-term" data-term="glycosylation">γλυκοζυλίωση</span>.</li>
+                        <li><strong>Λείο Ενδοπλασματικό Δίκτυο (ΛΕΔ):</strong> Δεν έχει ριβοσώματα και συμμετέχει κυρίως στη σύνθεση λιπιδίων, στεροειδών ορμονών και στην αποτοξίνωση του κυττάρου από βλαβερές ουσίες.</li>
+                        <li><strong>Ποιοτικός Έλεγχος στο ΕΔ:</strong> Το ΕΔ λειτουργεί και ως σύστημα ποιοτικού ελέγχου. Πρωτεΐνες που δεν έχουν αναδιπλωθεί σωστά συγκρατούνται, τους δίνεται η ευκαιρία να διορθωθούν, και αν αποτύχουν, οδηγούνται προς αποικοδόμηση. Αν συσσωρευτούν πολλές λανθασμένα διπλωμένες πρωτεΐνες, ενεργοποιείται η <strong><span class="interactive-term" data-term="unfolded_protein_response">Απόκριση στις Λανθασμένα Αναδιπλωμένες Πρωτεΐνες</span> (UPR)</strong>, ένα σύστημα σηματοδότησης που προσπαθεί να αποκαταστήσει την ισορροπία.</li>
+                    </ul>
+
+                    <h3>Σύμπλεγμα Golgi</h3>
+                    <p>Αφού οι πρωτεΐνες και τα λιπίδια παραχθούν στο ΕΔ, μεταφέρονται στο <strong>Σύμπλεγμα Golgi</strong>, το οποίο λειτουργεί ως το κέντρο επεξεργασίας και διαλογής του κυττάρου. Το Golgi αποτελείται από μια στοίβα από πεπλατυσμένους σάκους που ονομάζονται δεξαμενές. Έχει μια πολική δομή:</p>
+                    <ul>
+                        <li>Η <strong>cis όψη</strong> (είσοδος) παραλαμβάνει τα υλικά από το ΕΔ.</li>
+                        <li>Καθώς τα μόρια ταξιδεύουν μέσα από τις <strong>ενδιάμεσες δεξαμενές</strong>, υφίστανται περαιτέρω τροποποιήσεις (π.χ. ωρίμανση των ολιγοσακχαριτών).</li>
+                        <li>Η <strong>trans όψη</strong> (έξοδος) είναι το τελικό σημείο διαλογής, όπου τα μόρια πακετάρονται σε κυστίδια για να σταλούν στον τελικό τους προορισμό.</li>
+                    </ul>
+                    
+                    <h3>Κυστιδιακή Μεταφορά: Το Σύστημα Διανομής</h3>
+                    <p>Η μετακίνηση υλικών μεταξύ του ΕΔ, του Golgi και άλλων προορισμών δεν γίνεται τυχαία. Πραγματοποιείται μέσω μικρών, σφαιρικών σάκων που ονομάζονται <strong>κυστίδια μεταφοράς</strong>. Η διαδικασία αυτή είναι εξαιρετικά επιλεκτική.</p>
+                    <p>Τα κυστίδια σχηματίζονται με εκκόλπωση από τη μεμβράνη ενός "δότη" οργανιδίου. Αυτή η διαδικασία καθοδηγείται από ειδικές <strong>πρωτεΐνες επικάλυψης</strong>, όπως η <strong>κλαθρίνη</strong>, η <strong>COPI</strong> και η <strong>COPII</strong>. Κάθε τύπος επικάλυψης σχετίζεται με συγκεκριμένες διαδρομές μεταφοράς. Αυτές οι πρωτεΐνες βοηθούν στη διαμόρφωση του κυστιδίου και στην επιλογή του σωστού "φορτίου".</p>
+                    <p>Για να φτάσει ένα κυστίδιο στον σωστό προορισμό, χρησιμοποιεί ένα σύστημα "διευθυνσιοδότησης". Οι πρωτεΐνες <strong>Rab</strong> στην επιφάνεια του κυστιδίου λειτουργούν ως "ταχυδρομικοί κώδικες", ενώ οι πρωτεΐνες <strong>SNARE</strong> (v-SNAREs στο κυστίδιο και t-SNAREs στη μεμβράνη-στόχο) δρουν σαν "κλειδί" και "κλειδαριά", εξασφαλίζοντας ότι το κυστίδιο θα συντηχθεί μόνο με τη σωστή μεμβράνη. Αυτή η σύντηξη απελευθερώνει το περιεχόμενο του κυστιδίου στον αυλό του οργανιδίου-στόχου.</p>
+                    
+                </section>
+
+                <section id="transport">
+                    <h2>5. Διαδρομές Μεταφοράς: Εξωκυττάρωση και Ενδοκυττάρωση</h2>
+                    <p>Το κύτταρο βρίσκεται σε μια συνεχή, δυναμική ανταλλαγή υλικών με το περιβάλλον του. Αυτή η ανταλλαγή επιτυγχάνεται μέσω δύο αντίστροφων διαδικασιών: της εξωκυττάρωσης, για την εξαγωγή υλικών, και της ενδοκυττάρωσης, για την εισαγωγή τους. Η μεταφορά ουσιών διαμέσου της μεμβράνης μπορεί να είναι παθητική ή ενεργός.</p>
+                    
+                    <h3>Παθητική vs. Ενεργός Μεταφορά</h3>
+                    <p>Οι ουσίες διασχίζουν τις μεμβράνες με δύο βασικούς τρόπους:</p>
+                    <ul>
+                        <li><strong><span class="interactive-term" data-term="passive_transport">Παθητική Μεταφορά</span>:</strong> Οι ουσίες κινούνται προς τη φορά της <span class="interactive-term" data-term="electrochemical_gradient">ηλεκτροχημικής τους βαθμίδας</span> (από υψηλότερη προς χαμηλότερη συγκέντρωση/δυναμικό), χωρίς να απαιτείται ενέργεια. Αυτό μπορεί να γίνει είτε με απλή διάχυση μέσα από τη διπλοστοιβάδα (για μικρά, υδρόφοβα μόρια) είτε με διευκολυνόμενη διάχυση μέσω πρωτεϊνών μεμβράνης.</li>
+                        <li><strong><span class="interactive-term" data-term="active_transport">Ενεργός Μεταφορά</span>:</strong> Οι ουσίες κινούνται αντίθετα στη φορά της ηλεκτροχημικής τους βαθμίδας (από χαμηλότερη προς υψηλότερη συγκέντρωση). Αυτή η διαδικασία απαιτεί ενέργεια, η οποία συνήθως προέρχεται από την υδρόλυση του ATP ή από τη σύζευξη με την κίνηση ενός άλλου ιόντος προς τη φορά της δικής του βαθμίδας.</li>
+                    </ul>
+
+                    <h3>Μεταφορείς και Δίαυλοι</h3>
+                    <p>Η διευκολυνόμενη διάχυση και η ενεργός μεταφορά επιτελούνται από δύο κύριες κατηγορίες πρωτεϊνών:</p>
+                    <ul>
+                        <li><strong><span class="interactive-term" data-term="transporter">Μεταφορείς (Transporters)</span>:</strong> Δεσμεύουν ειδικά το μόριο που θα μεταφέρουν και υφίστανται μια σειρά αλλαγών στη διαμόρφωσή τους για να το περάσουν στην άλλη πλευρά της μεμβράνης. Λειτουργούν σαν περιστρεφόμενες πόρτες. Μπορούν να μεσολαβήσουν τόσο στην παθητική όσο και στην ενεργό μεταφορά.</li>
+                        <li><strong><span class="interactive-term" data-term="channel">Δίαυλοι (Channels)</span>:</strong> Σχηματίζουν υδρόφιλους πόρους διαμέσου της μεμβράνης. Όταν είναι ανοιχτοί, επιτρέπουν σε συγκεκριμένα ιόντα ή μόρια (όπως το νερό) να περάσουν πολύ γρήγορα. Η μεταφορά μέσω διαύλων είναι πάντα παθητική.</li>
+                    </ul>
+                    
+                    <figure class="custom-svg-container">
+                        <svg viewBox="0 0 400 150" xmlns="http://www.w3.org/2000/svg">
+                             <defs>
+                                <marker id="arrowhead-small" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="4" markerHeight="4" orient="auto-start-reverse">
+                                    <path d="M 0 0 L 10 5 L 0 10 z" fill="#475569" />
+                                </marker>
+                            </defs>
+                            <text x="200" y="20" text-anchor="middle" font-size="14" font-weight="bold" fill="#1e3a8a">Τύποι Μεταφοράς διαμέσου της Μεμβράνης</text>
+                            
+                            <!-- Simple Diffusion -->
+                            <rect x="20" y="40" width="100" height="8" fill="#dbeafe"/>
+                            <rect x="20" y="102" width="100" height="8" fill="#dbeafe"/>
+                            <circle cx="70" cy="55" r="4" fill="#f87171"/>
+                            <path d="M 70 65 L 70 95" stroke="#475569" stroke-width="1.5" marker-end="url(#arrowhead-small)"/>
+                            <text x="70" y="130" text-anchor="middle" font-size="10" fill="#334155">Απλή Διάχυση</text>
+
+                            <!-- Channel -->
+                            <rect x="150" y="40" width="100" height="8" fill="#dbeafe"/>
+                            <rect x="150" y="102" width="100" height="8" fill="#dbeafe"/>
+                            <path d="M 180 48 v 54" stroke="#6ee7b7" stroke-width="12" stroke-linecap="round"/>
+                            <path d="M 220 48 v 54" stroke="#6ee7b7" stroke-width="12" stroke-linecap="round"/>
+                            <circle cx="200" cy="55" r="4" fill="#f87171"/>
+                            <path d="M 200 65 L 200 95" stroke="#475569" stroke-width="1.5" marker-end="url(#arrowhead-small)"/>
+                            <text x="200" y="130" text-anchor="middle" font-size="10" fill="#334155">Δίαυλος (Παθητική)</text>
+
+                             <!-- Transporter -->
+                            <rect x="280" y="40" width="100" height="8" fill="#dbeafe"/>
+                            <rect x="280" y="102" width="100" height="8" fill="#dbeafe"/>
+                            <path d="M 310 48 v 54" stroke="#a78bfa" stroke-width="12" stroke-linecap="round"/>
+                            <path d="M 350 48 c 0 15 -20 15 -20 27 s 20 12 20 27" fill="none" stroke="#a78bfa" stroke-width="12" stroke-linecap="round"/>
+                            <circle cx="330" cy="55" r="4" fill="#f87171"/>
+                            <path d="M 330 65 L 330 95" stroke="#475569" stroke-width="1.5" marker-end="url(#arrowhead-small)"/>
+                            <text x="330" y="130" text-anchor="middle" font-size="10" fill="#334155">Μεταφορέας (Παθ./Ενεργ.)</text>
+                        </svg>
+                        <figcaption>Σύγκριση της απλής διάχυσης, της μεταφοράς μέσω διαύλου και της μεταφοράς μέσω μεταφορέα.</figcaption>
+                    </figure>
+
+                    <h3>Εξωκυττάρωση και Ενδοκυττάρωση</h3>
+                    <p>Αυτές οι δύο διαδικασίες, που βασίζονται στην κυστιδιακή μεταφορά, αποτελούν τις κύριες διαδρομές για τη μαζική μεταφορά υλικών.</p>
+                    <ul>
+                        <li><strong>Εξωκυττάρωση (Εκκριτική Οδός):</strong> Είναι η διαδικασία με την οποία τα κυστίδια που προέρχονται από το Σύμπλεγμα Golgi συντήκονται με την πλασματική μεμβράνη, απελευθερώνοντας το περιεχόμενό τους. Υπάρχει η <strong>συνεχής</strong> οδός (για συνεχή ανανέωση της μεμβράνης) και η <strong>ρυθμιζόμενη</strong> οδός (για έκκριση κατόπιν σήματος, π.χ. ορμόνες).</li>
+                        <li><strong>Ενδοκυττάρωση (Ενδοκυτταρική Οδός):</strong> Είναι η διαδικασία με την οποία το κύτταρο προσλαμβάνει υλικά, εγκλωβίζοντάς τα σε κυστίδια. Η <strong>ενδοκυττάρωση μέσω υποδοχέα</strong> (π.χ. πρόσληψη LDL) είναι εξαιρετικά επιλεκτική, ενώ η <strong>φαγοκυττάρωση</strong> και η <strong>πινοκυττάρωση</strong> είναι λιγότερο επιλεκτικές.</li>
+                    </ul>
+                </section>
+
+                <section id="recycling">
+                    <h2>6. Τα Λυσοσώματα και η Αυτοφαγία: Ανακύκλωση και Καθαρισμός</h2>
+                    <p>Αφού τα υλικά εισέλθουν στο κύτταρο μέσω της ενδοκυττάρωσης, μεταφέρονται σε ένα οργανίδιο που ονομάζεται <strong>πρώιμο ενδόσωμα</strong>. Εδώ γίνεται η πρώτη διαλογή: πολλοί υποδοχείς ανακυκλώνονται και επιστρέφουν στην πλασματική μεμβράνη, ενώ το φορτίο τους συνεχίζει το ταξίδι του προς τα <strong>λυσόσωμα</strong>.</p>
+                    <p>Τα <strong>λυσόσωμα</strong> είναι τα κέντρα ανακύκλωσης και πέψης του κυττάρου. Είναι σφαιρικά οργανίδια γεμάτα με ισχυρά <strong>υδρολυτικά ένζυμα</strong> (περίπου 40 διαφορετικά είδη), τα οποία μπορούν να διασπάσουν σχεδόν κάθε βιολογικό μακρομόριο (πρωτεΐνες, υδατάνθρακες, λιπίδια, νουκλεϊκά οξέα). Για να λειτουργήσουν, αυτά τα ένζυμα χρειάζονται όξινο περιβάλλον (pH ~5.0), το οποίο διατηρείται στο εσωτερικό του λυσοσώματος χάρη σε μια αντλία πρωτονίων. Αυτό το όξινο pH αποτελεί έναν μηχανισμό ασφαλείας: αν τα ένζυμα διαρρεύσουν στο κυτταρόπλασμα (με ουδέτερο pH ~7.2), καθίστανται ανενεργά και δεν προκαλούν ζημιά.</p>
+                    <p>Εκτός από τα εξωκυττάρια υλικά, τα λυσοσώματα διασπούν και τα ίδια τα συστατικά του κυττάρου, σε μια διαδικασία που ονομάζεται <strong>αυτοφαγία</strong> ("ο εαυτός τρώγεται"). Αυτή είναι μια θεμελιώδης διαδικασία για την κυτταρική υγεία. Όταν ένα οργανίδιο, όπως ένα μιτοχόνδριο, γεράσει ή υποστεί βλάβη, το κύτταρο το περικλείει σε μια διπλή μεμβράνη, σχηματίζοντας ένα <strong>αυτοφαγόσωμα</strong>. Στη συνέχεια, το αυτοφαγόσωμα συντήκεται με ένα λυσόσωμα, και το περιεχόμενό του διασπάται στα βασικά του συστατικά, τα οποία το κύτταρο μπορεί να επαναχρησιμοποιήσει. Η αυτοφαγία είναι κρίσιμη για την επιβίωση σε συνθήκες έλλειψης θρεπτικών ουσιών, για την απομάκρυνση παθογόνων που έχουν εισβάλει στο κυτταρόπλασμα και για την ανανέωση των κυτταρικών δομών.</p>
+                     <figure class="custom-svg-container">
+                        <svg viewBox="0 0 400 200" xmlns="http://www.w3.org/2000/svg">
+                            <text x="200" y="20" text-anchor="middle" font-size="14" font-weight="bold" fill="#1e3a8a">Διαδρομές προς το Λυσόσωμα</text>
+                            <!-- Phagocytosis -->
+                            <path d="M 20 50 C 30 30, 50 30, 60 50" fill="none" stroke="#f59e0b" stroke-width="2"/>
+                            <circle cx="40" cy="40" r="8" fill="#fcd34d"/>
+                            <text x="40" y="25" text-anchor="middle" font-size="10" fill="#b45309">Βακτήριο</text>
+                            <path d="M 40 60 L 40 80" stroke="#a1a1aa" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+                            <circle cx="40" cy="95" r="15" fill="#fef08a" stroke="#f59e0b" stroke-width="2"/>
+                            <text x="40" y="120" text-anchor="middle" font-size="10" fill="#334155">Φαγόσωμα</text>
+                            <!-- Autophagy -->
+                            <rect x="120" y="50" width="30" height="15" rx="5" fill="#a78bfa" stroke="#6d28d9" stroke-width="1.5"/>
+                            <text x="135" y="40" text-anchor="middle" font-size="10" fill="#5b21b6">Μιτοχόνδριο</text>
+                            <path d="M 135 75 L 135 90" stroke="#a1a1aa" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+                            <circle cx="135" cy="110" r="20" fill="#e9d5ff" stroke="#a855f7" stroke-width="2"/>
+                            <circle cx="135" cy="110" r="15" fill="none" stroke="#a855f7" stroke-width="1.5" stroke-dasharray="3 2"/>
+                            <rect x="125" y="102.5" width="20" height="10" rx="3" fill="#c4b5fd"/>
+                            <text x="135" y="140" text-anchor="middle" font-size="10" fill="#334155">Αυτοφαγόσωμα</text>
+                             <!-- Endocytosis -->
+                            <path d="M 220 50 C 220 60, 240 60, 240 50" fill="#d1fae5" stroke="#34d399" stroke-width="2"/>
+                            <path d="M 230 60 L 230 80" stroke="#a1a1aa" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+                            <circle cx="230" cy="95" r="12" fill="#d1fae5" stroke="#34d399" stroke-width="2"/>
+                            <text x="230" y="120" text-anchor="middle" font-size="10" fill="#334155">Ενδόσωμα</text>
+                            <!-- Lysosome -->
+                            <circle cx="330" cy="95" r="25" fill="#fecaca" stroke="#dc2626" stroke-width="2"/>
+                            <text x="330" y="98" text-anchor="middle" font-size="12" fill="#991b1b" font-weight="bold">Λυσόσωμα</text>
+                            <!-- Fusion Arrows -->
+                            <path d="M 65 95 C 150 95, 250 95, 300 95" fill="none" stroke="#a1a1aa" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+                            <path d="M 160 110 C 200 110, 250 100, 300 98" fill="none" stroke="#a1a1aa" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+                            <path d="M 250 95 C 270 95, 290 95, 305 95" fill="none" stroke="#a1a1aa" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+                            <text x="200" y="170" text-anchor="middle" font-size="12" fill="#7f1d1d" font-weight="bold">Σύντηξη και Αποικοδόμηση</text>
+                        </svg>
+                        <figcaption>Οι τρεις κύριες διαδρομές που οδηγούν υλικά προς αποικοδόμηση στα λυσοσώματα: φαγοκυττάρωση, αυτοφαγία και ενδοκυττάρωση.</figcaption>
+                    </figure>
+                </section>
+
+                <section id="conclusion">
+                    <h2>7. Επίλογος: Ένα Δυναμικό και Συντονισμένο Σύστημα</h2>
+                    <p>Η περιήγησή μας στον κόσμο του ευκαρυωτικού κυττάρου αποκαλύπτει ένα σύστημα απίστευτης πολυπλοκότητας, όπου κάθε στοιχείο έχει τον ρόλο του και συνεργάζεται αρμονικά με τα υπόλοιπα. Από τον πυρήνα, που δίνει τις εντολές, μέχρι το ενδομεμβρανικό σύστημα, που τις εκτελεί, και τα λυσοσώματα, που διατηρούν την τάξη, το κύτταρο λειτουργεί σαν μια αυτόνομη, δυναμική και εξαιρετικά αποτελεσματική μονάδα ζωής.</p>
+                    <p>Η κατανόηση αυτών των θεμελιωδών διαδικασιών —πώς οι πρωτεΐνες βρίσκουν τον δρόμο τους, πώς το κύτταρο επικοινωνεί με το περιβάλλον του και πώς ανανεώνεται— δεν είναι απλώς ένα ακαδημαϊκό εγχείρημα. Αποτελεί τη βάση για την κατανόηση της ανθρώπινης υγείας και ασθένειας. Δυσλειτουργίες σε οποιοδήποτε από αυτά τα μονοπάτια μπορούν να οδηγήσουν σε σοβαρές παθήσεις, από γενετικά σύνδρομα όπως η κυστική ίνωση και οι λυσοσωμικές ασθένειες αποθήκευσης, μέχρι τον καρκίνο και τις νευροεκφυλιστικές νόσους. Η συνεχής έρευνα σε αυτό το πεδίο ανοίγει νέους δρόμους για τη διάγνωση και τη θεραπεία, φέρνοντάς μας όλο και πιο κοντά στην αποκωδικοποίηση των μυστικών της ίδιας της ζωής.</p>
+                </section>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- Glossary Tooltip -->
+    <div id="glossary-tooltip"></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const sections = document.querySelectorAll('section');
+            const navLinks = document.querySelectorAll('#table-of-contents a');
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const sidebar = document.getElementById('sidebar');
+            const mainContent = document.querySelector('main');
+
+            // Glossary data
+            const glossary = {
+                organelle: { title: 'Οργανίδιο', def: 'Μια εξειδικευμένη δομή μέσα σε ένα ευκαρυωτικό κύτταρο που εκτελεί συγκεκριμένες λειτουργίες, όπως ο πυρήνας ή τα μιτοχόνδρια.' },
+                exocytosis: { title: 'Εξωκυττάρωση', def: 'Η διαδικασία με την οποία ένα κύτταρο απελευθερώνει μόρια στο εξωτερικό περιβάλλον μέσω της σύντηξης κυστιδίων με την πλασματική μεμβράνη.' },
+                endocytosis: { title: 'Ενδοκυττάρωση', def: 'Η διαδικασία με την οποία ένα κύτταρο προσλαμβάνει μόρια από το εξωτερικό περιβάλλον, περικλείοντάς τα σε κυστίδια που σχηματίζονται από την πλασματική μεμβράνη.' },
+                chromosome: { title: 'Χρωμόσωμα', def: 'Μια δομή που αποτελείται από DNA και πρωτεΐνες, η οποία βρίσκεται μέσα στον πυρήνα και φέρει τις γενετικές πληροφορίες.' },
+                gene_expression: { title: 'Γονιδιακή Έκφραση', def: 'Η διαδικασία με την οποία οι πληροφορίες από ένα γονίδιο χρησιμοποιούνται για τη σύνθεση ενός λειτουργικού προϊόντος, όπως μια πρωτεΐνη.' },
+                protein: { title: 'Πρωτεΐνη', def: 'Μεγάλα, πολύπλοκα μόρια που επιτελούν ένα ευρύ φάσμα κρίσιμων λειτουργιών στο σώμα, από τη δόμηση ιστών μέχρι την κατάλυση βιοχημικών αντιδράσεων.' },
+                er: { title: 'Ενδοπλασματικό Δίκτυο (ΕΔ)', def: 'Ένα δίκτυο μεμβρανών μέσα στο κυτταρόπλασμα που συμμετέχει στη σύνθεση πρωτεϊνών και λιπιδίων.' },
+                importin: { title: 'Εισαγωγίνη', def: 'Πρωτεΐνη-μεταφορέας που αναγνωρίζει σήματα πυρηνικής εντόπισης και διευκολύνει την εισαγωγή πρωτεϊνών στον πυρήνα.' },
+                exportin: { title: 'Εξαγωγίνη', def: 'Πρωτεΐνη-μεταφορέας που αναγνωρίζει σήματα πυρηνικής εξαγωγής και διευκολύνει την έξοδο μορίων (όπως RNA και πρωτεΐνες) από τον πυρήνα.' },
+                ribosome: { title: 'Ριβόσωμα', def: 'Κυτταρικό οργανίδιο υπεύθυνο για την πρωτεϊνοσύνθεση. "Διαβάζει" το mRNA και συναρμολογεί τα αμινοξέα για να φτιάξει μια πρωτεΐνη.' },
+                glycosylation: { title: 'Γλυκοζυλίωση', def: 'Η ενζυμική διαδικασία προσθήκης ολιγοσακχαριτών (αλυσίδων σακχάρων) σε πρωτεΐνες ή λιπίδια. Είναι μια συχνή τροποποίηση που συμβαίνει στο ΕΔ και το Golgi.' },
+                neurotransmitter: { title: 'Νευροδιαβιβαστής', def: 'Μια χημική ουσία που μεταδίδει σήματα από έναν νευρώνα σε ένα άλλο κύτταρο-στόχο μέσω μιας σύναψης.' },
+                macrophage: { title: 'Μακροφάγο', def: 'Ένας τύπος λευκού αιμοσφαιρίου του ανοσοποιητικού συστήματος που "καταπίνει" και χωνεύει κυτταρικά υπολείμματα, ξένα σώματα, μικρόβια και καρκινικά κύτταρα μέσω φαγοκυττάρωσης.' },
+                lipid_bilayer: { title: 'Λιπιδική Διπλοστοιβάδα', def: 'Η θεμελιώδης δομή των βιολογικών μεμβρανών, που αποτελείται από δύο στρώματα φωσφολιπιδίων με τις υδρόφοβες ουρές τους στραμμένες προς το εσωτερικό.' },
+                amphipathic: { title: 'Αμφίφιλο', def: 'Ένα μόριο που διαθέτει τόσο υδρόφιλες (πολικές) όσο και υδρόφοβες (μη πολικές) περιοχές, όπως τα φωσφολιπίδια.' },
+                transporter: { title: 'Μεταφορέας', def: 'Μια πρωτεΐνη μεμβράνης που δεσμεύει ένα συγκεκριμένο μόριο και αλλάζει σχήμα για να το μεταφέρει στην άλλη πλευρά της μεμβράνης.' },
+                channel: { title: 'Δίαυλος', def: 'Μια πρωτεΐνη μεμβράνης που σχηματίζει έναν πόρο, επιτρέποντας την ταχεία διέλευση συγκεκριμένων ιόντων ή μικρών μορίων.' },
+                active_transport: { title: 'Ενεργός Μεταφορά', def: 'Η κίνηση ουσιών διαμέσου μιας μεμβράνης ενάντια στη βαθμίδα συγκέντρωσής τους, μια διαδικασία που απαιτεί ενέργεια.' },
+                passive_transport: { title: 'Παθητική Μεταφορά', def: 'Η κίνηση ουσιών διαμέσου μιας μεμβράνης προς τη φορά της βαθμίδας συγκέντρωσής τους, χωρίς την κατανάλωση μεταβολικής ενέργειας.' },
+                electrochemical_gradient: { title: 'Ηλεκτροχημική Βαθμίδα', def: 'Ο συνδυασμός της διαφοράς συγκέντρωσης και της διαφοράς ηλεκτρικού δυναμικού (τάση) που καθορίζει την κατεύθυνση της παθητικής κίνησης ενός ιόντος.' },
+                unfolded_protein_response: { title: 'Απόκριση σε Λανθασμένα Αναδιπλωμένες Πρωτεΐνες (UPR)', def: 'Ένας κυτταρικός μηχανισμός απόκρισης στο στρες που ενεργοποιείται όταν συσσωρεύονται λανθασμένα διπλωμένες πρωτεΐνες στο ενδοπλασματικό δίκτυο.' },
+            };
+
+            // Mobile menu toggle
+            mobileMenuButton.addEventListener('click', () => {
+                sidebar.classList.toggle('-translate-x-full');
+            });
+            
+            mainContent.addEventListener('click', () => {
+                if (!sidebar.classList.contains('-translate-x-full')) {
+                    sidebar.classList.add('-translate-x-full');
+                }
+            });
+
+            // Scrollspy for active navigation link
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    const id = entry.target.getAttribute('id');
+                    const navLink = document.querySelector(`#table-of-contents a[href="#${id}"]`);
+                    if (entry.isIntersecting && entry.intersectionRatio > 0.5) {
+                        document.querySelector('.active-nav')?.classList.remove('active-nav');
+                        navLink.classList.add('active-nav');
+                    }
+                });
+            }, { rootMargin: "-50% 0px -50% 0px", threshold: 0.5 });
+
+            sections.forEach(section => {
+                observer.observe(section);
+            });
+            
+            // Close mobile menu on link click
+            navLinks.forEach(link => {
+                link.addEventListener('click', () => {
+                    if (window.innerWidth < 768) {
+                        sidebar.classList.add('-translate-x-full');
+                    }
+                });
+            });
+
+            // Glossary tooltip logic
+            const terms = document.querySelectorAll('.interactive-term');
+            const tooltip = document.getElementById('glossary-tooltip');
+
+            terms.forEach(term => {
+                term.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const termKey = term.dataset.term;
+                    const termData = glossary[termKey];
+                    if (termData) {
+                        tooltip.innerHTML = `<h4 class="font-bold text-sky-300 mb-2">${termData.title}</h4><p>${termData.def}</p>`;
+                        
+                        const rect = term.getBoundingClientRect();
+                        tooltip.style.left = `${rect.left + window.scrollX}px`;
+                        tooltip.style.top = `${rect.bottom + window.scrollY + 10}px`;
+                        tooltip.classList.add('visible');
+                    }
+                });
+            });
+
+            document.addEventListener('click', () => {
+                if (tooltip.classList.contains('visible')) {
+                    tooltip.classList.remove('visible');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
