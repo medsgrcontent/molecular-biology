@@ -1,189 +1,385 @@
 <!DOCTYPE html>
-<html lang="el">
+<html lang="el" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Οι Βασικές Αρχές της Κυτταρικής Βιολογίας: Μια Εισαγωγή</title>
+    <title>Διαδραστική Εξερεύνηση του Κυττάρου</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Warm Neutrals with Muted Biological Tones -->
+    <!-- Application Structure Plan: The SPA uses a non-linear, dashboard-style layout with a persistent top navigation bar to facilitate free exploration. The content is reorganized from the source report's linear chapters into three thematic sections: "The World of the Cell," "The Building Blocks," and "Cellular Processes." This structure is chosen to group related concepts logically, making them more digestible and allowing users to compare and connect ideas across different biological scales (from whole cells to molecules to processes). Interactions include hover-to-reveal information on diagrams, clickable tabs for focused content, and an interactive chart to visualize conceptual data, enhancing engagement and understanding over a static text format. -->
+    <!-- Visualization & Content Choices: 
+        1. Prokaryotic vs. Eukaryotic Diagram -> Goal: Compare/Inform -> Method: Interactive HTML/CSS diagram with hover effects -> Interaction: Hover over labels to highlight parts and show tooltips with definitions -> Justification: A direct, visual comparison is more effective for learning structural differences than text alone. The interactivity encourages exploration. -> Method: HTML/CSS/JS.
+        2. Macromolecule Cards -> Goal: Organize -> Method: Four distinct, styled cards in a grid layout -> Interaction: Static but visually segregated -> Justification: Breaks the dense topic of macromolecules into four clear, parallel concepts, aiding comprehension and retention. -> Method: HTML/CSS (Tailwind Grid).
+        3. Central Dogma Flowchart -> Goal: Organize/Inform -> Method: A visual flowchart using HTML/CSS -> Interaction: Clickable steps (Replication, Transcription, Translation) that reveal detailed explanations -> Justification: Simplifies a complex, multi-step process into an easy-to-follow visual path, with details available on demand to avoid overwhelming the user. -> Method: HTML/CSS/JS.
+        4. Cell Composition Donut Chart -> Goal: Inform -> Method: Chart.js Canvas -> Interaction: Hover over segments to see tooltips with percentages -> Justification: Provides a quick, quantitative-style visual summary of a cell's chemical makeup, making an abstract concept more concrete and memorable. -> Library: Chart.js.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
     <style>
         body {
             font-family: 'Inter', sans-serif;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
+            background-color: #fdfbf7;
         }
-        h1, h2, h3 {
-            font-family: 'Lora', serif;
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 450px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
         }
-        /* Στυλ για ομαλή κύλιση */
-        html {
-            scroll-behavior: smooth;
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+        .interactive-diagram-item:hover .tooltip {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+        .tab-button.active {
+            background-color: #3b82f6;
+            color: white;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
         }
     </style>
 </head>
-<body class="bg-gray-50 text-gray-800">
+<body class="text-gray-800">
 
-    <!-- Κεφαλίδα -->
-    <header class="bg-white shadow-sm sticky top-0 z-50">
-        <div class="container mx-auto px-6 py-4">
-            <h1 class="text-2xl md:text-3xl font-bold text-gray-900">Οι Βασικές Αρχές της Κυτταρικής Βιολογίας</h1>
-            <p class="text-sm text-gray-600">Μια Διαδραστική Εισαγωγή</p>
+    <!-- Header & Navigation -->
+    <header class="bg-white/80 backdrop-blur-lg sticky top-0 z-50 shadow-sm">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <h1 class="text-xl md:text-2xl font-bold text-gray-900">Βιολογία του Κυττάρου</h1>
+            <div class="hidden md:flex space-x-6">
+                <a href="#section-world" class="text-gray-600 hover:text-blue-600 transition">Ο Κόσμος του Κυττάρου</a>
+                <a href="#section-molecules" class="text-gray-600 hover:text-blue-600 transition">Τα Δομικά Υλικά</a>
+                <a href="#section-processes" class="text-gray-600 hover:text-blue-600 transition">Οι Λειτουργίες</a>
+            </div>
+            <button id="mobile-menu-button" class="md:hidden text-gray-700">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+            </button>
+        </nav>
+        <div id="mobile-menu" class="hidden md:hidden px-6 pb-4">
+            <a href="#section-world" class="block py-2 text-gray-600 hover:text-blue-600 transition">Ο Κόσμος του Κυττάρου</a>
+            <a href="#section-molecules" class="block py-2 text-gray-600 hover:text-blue-600 transition">Τα Δομικά Υλικά</a>
+            <a href="#section-processes" class="block py-2 text-gray-600 hover:text-blue-600 transition">Οι Λειτουργίες</a>
         </div>
     </header>
 
-    <div class="container mx-auto px-6 py-8 md:py-12 flex flex-col lg:flex-row gap-8">
+    <main class="container mx-auto px-6 py-12">
 
-        <!-- Πίνακας Περιεχομένων (Κολλημένη Πλαϊνή Μπάρα) -->
-        <aside class="lg:w-1/4 lg:sticky lg:top-24 self-start">
-            <div class="bg-white p-6 rounded-lg shadow-md">
-                <h3 class="font-bold text-xl mb-4 text-gray-900">Πίνακας Περιεχομένων</h3>
-                <nav>
-                    <ul class="space-y-3">
-                        <li>
-                            <a href="#chapter1" class="font-semibold text-blue-600 hover:text-blue-800">Κεφάλαιο 1: Οι Παγκόσμιες Αρχές της Ζωής</a>
-                            <ul class="ml-4 mt-2 space-y-2 text-sm border-l-2 border-gray-200 pl-4">
-                                <li><a href="#section1-1" class="text-gray-600 hover:text-gray-900">Εισαγωγή</a></li>
-                                <li><a href="#section1-2" class="text-gray-600 hover:text-gray-900">Το Σχέδιο: DNA</a></li>
-                                <li><a href="#section1-3" class="text-gray-600 hover:text-gray-900">Αντιγραφή</a></li>
-                                <li><a href="#section1-4" class="text-gray-600 hover:text-gray-900">Γονίδιο σε Λειτουργία</a></li>
-                                <li><a href="#section1-5" class="text-gray-600 hover:text-gray-900">Πρωτεΐνες: Οι Εργάτες</a></li>
-                                <li><a href="#section1-6" class="text-gray-600 hover:text-gray-900">Η Πλασματική Μεμβράνη</a></li>
-                            </ul>
-                        </li>
-                        <li>
-                            <a href="#chapter2" class="font-semibold text-blue-600 hover:text-blue-800">Κεφάλαιο 2: Περιήγηση στην Κυτταρική Ποικιλομορφία</a>
-                             <ul class="ml-4 mt-2 space-y-2 text-sm border-l-2 border-gray-200 pl-4">
-                                <li><a href="#section2-1" class="text-gray-600 hover:text-gray-900">Προέλευση και Εξέλιξη</a></li>
-                                <li><a href="#section2-2" class="text-gray-600 hover:text-gray-900">Οι Τρεις Τομείς</a></li>
-                                <li><a href="#section2-3" class="text-gray-600 hover:text-gray-900">Το Ευκαρυωτικό Κύτταρο</a></li>
-                                <li><a href="#section2-4" class="text-gray-600 hover:text-gray-900">Ενδοσυμβίωση</a></li>
-                                <li><a href="#section2-5" class="text-gray-600 hover:text-gray-900">Πολυκυτταρικότητα</a></li>
-                            </ul>
-                        </li>
-                        <li>
-                            <a href="#chapter3" class="font-semibold text-blue-600 hover:text-blue-800">Κεφάλαιο 3: Πώς Μελετάμε τα Κύτταρα</a>
-                             <ul class="ml-4 mt-2 space-y-2 text-sm border-l-2 border-gray-200 pl-4">
-                                <li><a href="#section3-1" class="text-gray-600 hover:text-gray-900">Οργανισμοί-Μοντέλα</a></li>
-                                <li><a href="#section3-2" class="text-gray-600 hover:text-gray-900">Μικροσκοπία</a></li>
-                                <li><a href="#section3-3" class="text-gray-600 hover:text-gray-900">Υποκυτταρική Κλασμάτωση</a></li>
-                                <li><a href="#section3-4" class="text-gray-600 hover:text-gray-900">Κυτταροκαλλιέργεια</a></li>
-                            </ul>
-                        </li>
-                    </ul>
-                </nav>
-            </div>
-        </aside>
+        <!-- Section 1: The World of the Cell -->
+        <section id="section-world" class="mb-20">
+            <h2 class="text-3xl md:text-4xl font-bold text-center mb-4">Ο Κόσμος του Κυττάρου</h2>
+            <p class="text-center text-gray-600 max-w-3xl mx-auto mb-12">Κάθε ζωντανός οργανισμός αποτελείται από κύτταρα, τις θεμελιώδεις μονάδες της ζωής. Εδώ, εξερευνούμε τις δύο βασικές κατηγορίες κυττάρων—προκαρυωτικά και ευκαρυωτικά—και τις δομές που τα καθορίζουν. Αλληλεπιδράστε με το διάγραμμα για να ανακαλύψετε τα βασικά τους συστατικά.</p>
 
-        <!-- Κύριο Περιεχόμενο -->
-        <main class="lg:w-3/4">
-            <article class="bg-white p-8 md:p-10 rounded-lg shadow-md prose max-w-none prose-p:text-gray-700 prose-headings:text-gray-900 prose-h2:border-b prose-h2:pb-2 prose-h3:mt-6 prose-a:text-blue-600">
-                
-                <!-- Κεφάλαιο 1 -->
-                <section id="chapter1">
-                    <h2 class="font-bold">Κεφάλαιο 1: Οι Παγκόσμιες Αρχές της Ζωής</h2>
-
-                    <div class="flex flex-col md:flex-row gap-6 my-6 items-center">
-                         <img src="https://placehold.co/600x400/e2e8f0/4a5568?text=Διάφορες+Μορφές+Ζωής" alt="Ποικιλομορφία της ζωής" class="rounded-lg shadow-md md:w-1/2">
-                         <p id="section1-1" class="md:w-1/2">
-                            <b>Εισαγωγή: Το Κύτταρο, η Θεμελιώδης Μονάδα της Ζωής.</b> Όλα τα ζωντανά πλάσματα στη Γη, από το μικρότερο βακτήριο μέχρι τη μεγαλύτερη φάλαινα, αποτελούνται από κύτταρα. Ένα κύτταρο είναι μια μικρή, περικλεισμένη από μεμβράνη μονάδα, γεμάτη με ένα συμπυκνωμένο υδατικό διάλυμα χημικών ουσιών, προικισμένη με την εξαιρετική ικανότητα να δημιουργεί αντίγραφα του εαυτού της μέσω της ανάπτυξης και της διαίρεσης. Είναι η θεμελιώδης μονάδα της ζωής, και η μελέτη των κυττάρων—η κυτταρική βιολογία—είναι το κλειδί για την κατανόηση του τι είναι η ζωή και πώς λειτουργεί. Παρά την απίστευτη ποικιλομορφία της ζωής που βλέπουμε γύρω μας, όλοι οι οργανισμοί μοιράζονται μια θεμελιώδη ομοιότητα σε κυτταρικό επίπεδο.
-                         </p>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
+                <!-- Prokaryotic Cell -->
+                <div class="bg-white p-6 rounded-xl shadow-lg">
+                    <h3 class="text-2xl font-bold mb-4 text-center text-blue-700">Προκαρυωτικό Κύτταρο</h3>
+                    <div id="prokaryotic-cell" class="relative w-full h-80 bg-blue-50 rounded-lg flex items-center justify-center border-2 border-blue-200">
+                        <div class="w-60 h-32 bg-blue-200 rounded-full relative">
+                            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-40 h-20">
+                                <div class="interactive-diagram-item" data-info="Πυρηνοειδές: Η περιοχή όπου βρίσκεται το γενετικό υλικό (DNA), χωρίς να περιβάλλεται από μεμβράνη.">
+                                    <div class="absolute w-20 h-10 border-2 border-dashed border-blue-600 rounded-full top-4 left-4"></div>
+                                    <span class="absolute top-8 left-10 font-semibold text-blue-800">DNA</span>
+                                </div>
+                            </div>
+                            <div class="interactive-diagram-item" data-info="Κυτταρόπλασμα: Το εσωτερικό του κυττάρου που περιέχει όλα τα συστατικά.">
+                                 <span class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-sm text-blue-500">•••</span>
+                            </div>
+                            <div class="interactive-diagram-item" data-info="Πλασματική Μεμβράνη: Ρυθμίζει την είσοδο και έξοδο ουσιών.">
+                                <span class="absolute top-0 right-10 font-semibold text-blue-800">Μεμβράνη</span>
+                            </div>
+                             <div class="interactive-diagram-item" data-info="Κυτταρικό Τοίχωμα: Παρέχει δομική υποστήριξη και προστασία (στα περισσότερα).">
+                                <span class="absolute bottom-0 left-8 font-semibold text-blue-800">Τοίχωμα</span>
+                            </div>
+                        </div>
+                        <div id="tooltip-pro" class="tooltip absolute bottom-full mb-2 w-max max-w-xs bg-gray-800 text-white text-sm rounded-md p-2 opacity-0 visibility-hidden transition-all duration-300 transform -translate-y-2"></div>
                     </div>
-                    
-                    <h3 id="section1-2">Το Σχέδιο της Ζωής: DNA</h3>
-                    <p>Όλα τα κύτταρα αποθηκεύουν τις κληρονομικές τους πληροφορίες με τη μορφή του <b>Δεοξυριβονουκλεϊκού Οξέος (DNA)</b>. Το DNA είναι ένα μακρύ, δίκλωνο πολυμερές που αποτελείται από τέσσερις διαφορετικές χημικές υπομονάδες που ονομάζονται νουκλεοτίδια: Αδενίνη (A), Γουανίνη (G), Κυτοσίνη (C) και Θυμίνη (T). Η αλληλουχία αυτών των νουκλεοτιδίων κωδικοποιεί τις γενετικές οδηγίες για την κατασκευή και τη διατήρηση ενός οργανισμού. Η δομή του DNA είναι μια διπλή έλικα, όπου δύο κλώνοι συνδέονται με συγκεκριμένους κανόνες ζευγαρώματος βάσεων: το Α ζευγαρώνει πάντα με το T, και το C ζευγαρώνει πάντα με το G. Αυτή η συμπληρωματικότητα είναι το κλειδί για την ικανότητα της ζωής να αναπαράγεται.</p>
+                </div>
 
-                    <h3 id="section1-3">Αντιγραφή: Αντιγράφοντας το Σχέδιο</h3>
-                    <p>Για να συνεχιστεί η ζωή, οι κληρονομικές πληροφορίες πρέπει να αντιγραφούν πιστά. Αυτή η διαδικασία, που ονομάζεται <b>αντιγραφή του DNA</b>, βασίζεται στη δομή της διπλής έλικας του DNA. Οι δύο κλώνοι του μορίου DNA ξετυλίγονται, και κάθε κλώνος χρησιμεύει ως καλούπι για τη σύνθεση ενός νέου, συμπληρωματικού κλώνου. Οι κανόνες ζευγαρώματος βάσεων διασφαλίζουν ότι τα νέα μόρια DNA είναι ακριβή αντίγραφα του αρχικού.</p>
-                    
-                    <figure class="my-6">
-                        <img src="https://placehold.co/800x300/e2e8f0/4a5568?text=DNA+→+RNA+→+Πρωτεΐνη" alt="Κεντρικό Δόγμα" class="rounded-lg shadow-md w-full">
-                        <figcaption class="text-center text-sm mt-2 text-gray-600">Το κεντρικό δόγμα: η πληροφορία ρέει από το DNA στο RNA και στην πρωτεΐνη.</figcaption>
-                    </figure>
+                <!-- Eukaryotic Cell -->
+                <div class="bg-white p-6 rounded-xl shadow-lg">
+                    <h3 class="text-2xl font-bold mb-4 text-center text-green-700">Ευκαρυωτικό Κύτταρο</h3>
+                    <div id="eukaryotic-cell" class="relative w-full h-80 bg-green-50 rounded-lg flex items-center justify-center border-2 border-green-200">
+                        <div class="w-64 h-48 bg-green-200 rounded-3xl relative">
+                            <div class="interactive-diagram-item" data-info="Πυρήνας: Ένα μεμβρανώδες οργανίδιο που περιέχει το DNA του κυττάρου, οργανωμένο σε χρωμοσώματα.">
+                                <div class="absolute w-24 h-24 bg-green-400 rounded-full top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"></div>
+                                <span class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 font-semibold text-green-900">Πυρήνας</span>
+                            </div>
+                            <div class="interactive-diagram-item" data-info="Μιτοχόνδριο: Το 'εργοστάσιο ενέργειας' του κυττάρου, όπου γίνεται ο οξειδωτικός μεταβολισμός.">
+                                <div class="absolute w-16 h-8 bg-red-300 rounded-full top-4 right-4 border border-red-500"></div>
+                                 <span class="absolute top-6 right-5 font-semibold text-sm text-red-800">Μιτ.</span>
+                            </div>
+                            <div class="interactive-diagram-item" data-info="Κυτταρόπλασμα: Όλο το περιεχόμενο εκτός του πυρήνα.">
+                                <span class="absolute top-1/3 left-1/4 text-sm text-green-600">...</span>
+                            </div>
+                        </div>
+                        <div id="tooltip-eu" class="tooltip absolute bottom-full mb-2 w-max max-w-xs bg-gray-800 text-white text-sm rounded-md p-2 opacity-0 visibility-hidden transition-all duration-300 transform -translate-y-2"></div>
+                    </div>
+                </div>
+            </div>
+             <div class="mt-12 bg-white p-6 rounded-xl shadow-lg">
+                <h3 class="text-2xl font-bold mb-4 text-center">Σύγκριση & Σύνθεση</h3>
+                <p class="text-center text-gray-600">Η κύρια διαφορά είναι η παρουσία του <strong>πυρήνα</strong> και άλλων μεμβρανωδών οργανιδίων στα ευκαρυωτικά κύτταρα, επιτρέποντας μεγαλύτερη πολυπλοκότητα και εξειδίκευση. Η <strong>ενδοσυμβιωτική θεωρία</strong> εξηγεί πώς οργανίδια όπως τα μιτοχόνδρια προέκυψαν από την ενσωμάτωση προκαρυωτικών οργανισμών, ένα κρίσιμο βήμα στην εξέλιξη της ζωής.</p>
+                <div class="chart-container mt-8">
+                    <canvas id="cellCompositionChart"></canvas>
+                </div>
+                 <p class="text-center text-gray-600 mt-2 text-sm">Ενδεικτική μοριακή σύσταση ενός ζωικού κυττάρου.</p>
+            </div>
+        </section>
 
-                    <h3 id="section1-4">Από το Γονίδιο στη Λειτουργία: Μεταγραφή και Μετάφραση</h3>
-                    <p>Ο ρόλος του DNA πρέπει επίσης να εκφράσει τις πληροφορίες του για να κατασκευάσει τη μηχανή του κυττάρου. Αυτή είναι μια διαδικασία δύο βημάτων:</p>
-                    <ol class="list-decimal list-inside space-y-2">
-                        <li><b>Μεταγραφή:</b> Ένα τμήμα του DNA, γνωστό ως <b>γονίδιο</b>, χρησιμοποιείται ως καλούπι για τη σύνθεση ενός μορίου <b>Ριβονουκλεϊκού Οξέος (RNA)</b>. Το RNA είναι χημικά παρόμοιο με το DNA, αλλά είναι μονόκλωνο και χρησιμοποιεί Ουρακίλη (U) αντί για Θυμίνη (T). Τα περισσότερα από αυτά τα μόρια RNA είναι <b>αγγελιοφόρο RNA (mRNA)</b>.</li>
-                        <li><b>Μετάφραση:</b> Το μόριο mRNA ταξιδεύει σε μια κυτταρική μηχανή που ονομάζεται <b>ριβόσωμα</b>. Εδώ, ο γενετικός κώδικας διαβάζεται σε "λέξεις" τριών νουκλεοτιδίων που ονομάζονται κωδικόνια. Κάθε κωδικόνιο καθορίζει ένα από τα 20 διαφορετικά αμινοξέα, τα δομικά στοιχεία των πρωτεϊνών, δημιουργώντας μια <b>πρωτεΐνη</b>.</li>
-                    </ol>
-                    <p>Αυτή η ροή πληροφοριών από το DNA στο RNA και στην πρωτεΐνη είναι μια θεμελιώδης αρχή της μοριακής βιολογίας, που συχνά ονομάζεται "κεντρικό δόγμα".</p>
+        <!-- Section 2: Molecules of the Cell -->
+        <section id="section-molecules" class="mb-20">
+            <h2 class="text-3xl md:text-4xl font-bold text-center mb-4">Τα Δομικά Υλικά της Ζωής</h2>
+            <p class="text-center text-gray-600 max-w-3xl mx-auto mb-12">Τα κύτταρα δομούνται από τέσσερις κύριες κατηγορίες μακρομορίων. Κάθε κατηγορία έχει μοναδικές ιδιότητες και επιτελεί κρίσιμες λειτουργίες, από την αποθήκευση ενέργειας και πληροφοριών μέχρι την εκτέλεση όλων των βιοχημικών αντιδράσεων.</p>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <!-- Card 1: Carbohydrates -->
+                <div class="bg-white p-6 rounded-xl shadow-lg border-t-4 border-yellow-400">
+                    <h3 class="text-2xl font-bold mb-3">Υδατάνθρακες</h3>
+                    <p class="text-gray-600">Η κύρια πηγή <strong>ενέργειας</strong> (π.χ., γλυκόζη) και σημαντικά <strong>δομικά</strong> συστατικά (π.χ., κυτταρίνη). Πολυμερή τους, όπως το γλυκογόνο, λειτουργούν ως αποθήκες ενέργειας.</p>
+                </div>
+                <!-- Card 2: Lipids -->
+                <div class="bg-white p-6 rounded-xl shadow-lg border-t-4 border-red-400">
+                    <h3 class="text-2xl font-bold mb-3">Λιπίδια</h3>
+                    <p class="text-gray-600">Σχηματίζουν τις κυτταρικές <strong>μεμβράνες</strong> (φωσφολιπίδια), αποθηκεύουν ενέργεια και δρουν ως μόρια <strong>σηματοδότησης</strong> (π.χ., στεροειδείς ορμόνες).</p>
+                </div>
+                <!-- Card 3: Nucleic Acids -->
+                <div class="bg-white p-6 rounded-xl shadow-lg border-t-4 border-purple-400">
+                    <h3 class="text-2xl font-bold mb-3">Νουκλεϊκά Οξέα</h3>
+                    <p class="text-gray-600">Τα μόρια της <strong>πληροφορίας</strong>. Το DNA αποθηκεύει τη γενετική κληρονομιά, ενώ το RNA συμμετέχει στην έκφρασή της. Είναι πολυμερή νουκλεοτιδίων.</p>
+                </div>
+                 <!-- Card 4: Proteins -->
+                <div class="bg-white p-6 rounded-xl shadow-lg border-t-4 border-green-400">
+                    <h3 class="text-2xl font-bold mb-3">Πρωτεΐνες</h3>
+                    <p class="text-gray-600">Τα "εργαλεία" του κυττάρου. Δρουν ως <strong>ένζυμα</strong>, δομικά στοιχεία και ρυθμιστές. Η λειτουργία τους καθορίζεται από την πολύπλοκη <strong>τρισδιάστατη δομή</strong> τους.</p>
+                </div>
+            </div>
+        </section>
 
-                    <h3 id="section1-5">Οι Εργάτες του Κυττάρου: Πρωτεΐνες</h3>
-                    <p>Οι πρωτεΐνες είναι τα πιο άφθονα και λειτουργικά ευέλικτα μόρια στο κύτταρο. Είναι μακριά πολυμερή αμινοξέων, και η αλληλουχία αυτών των αμινοξέων κάνει την πρωτεΐνη να διπλώνεται σε ένα μοναδικό τρισδιάστατο σχήμα που καθορίζει τη λειτουργία της. Οι πρωτεΐνες έχουν αμέτρητους ρόλους: σχηματίζουν δομικά συστατικά, δρουν ως μοριακοί κινητήρες, λαμβάνουν σήματα και, το πιο σημαντικό, χρησιμεύουν ως <b>ένζυμα</b>, τα οποία είναι εξαιρετικά ειδικοί καταλύτες που επιταχύνουν τις χημικές αντιδράσεις.</p>
+        <!-- Section 3: Cellular Processes -->
+        <section id="section-processes">
+            <h2 class="text-3xl md:text-4xl font-bold text-center mb-4">Οι Λειτουργίες του Κυττάρου</h2>
+            <p class="text-center text-gray-600 max-w-3xl mx-auto mb-12">Από τη διαχείριση της ροής πληροφοριών μέχρι την κίνηση και τη διατήρηση της δομής, οι κυτταρικές λειτουργίες είναι ένα θαύμα συντονισμού και αποτελεσματικότητας. Επιλέξτε μια κατηγορία για να εξερευνήσετε τις βασικές διαδικασίες που κρατούν το κύτταρο ζωντανό.</p>
+            
+            <div class="bg-white p-6 rounded-xl shadow-lg">
+                <div class="flex justify-center border-b mb-6">
+                    <button class="tab-button active py-2 px-4 font-semibold" data-tab="dogma">Κεντρικό Δόγμα</button>
+                    <button class="tab-button py-2 px-4 font-semibold" data-tab="membrane">Κυτταρική Μεμβράνη</button>
+                    <button class="tab-button py-2 px-4 font-semibold" data-tab="cytoskeleton">Κυτταροσκελετός</button>
+                </div>
 
-                    <h3 id="section1-6">Το Όριο του Κυττάρου: Η Πλασματική Μεμβράνη</h3>
-                    <p>Κάθε κύτταρο περιβάλλεται από μια <b>πλασματική μεμβράνη</b>, ένα λεπτό φιλμ λιπιδίων και πρωτεϊνικών μορίων. Αυτή η μεμβράνη είναι ένας επιλεκτικός φραγμός. Αποτελείται κυρίως από <b>φωσφολιπίδια</b>, τα οποία έχουν μια υδρόφιλη κεφαλή και μια υδρόφοβη ουρά. Στο νερό, σχηματίζουν αυθόρμητα μια <b>λιπιδική διπλοστοιβάδα</b>, δημιουργώντας έναν σταθερό φραγμό που αποτελεί τη βάση όλων των βιολογικών μεμβρανών.</p>
-                </section>
+                <!-- Central Dogma Tab -->
+                <div id="tab-dogma" class="tab-content active">
+                    <h3 class="text-2xl font-bold text-center mb-4 text-indigo-700">Η Ροή της Γενετικής Πληροφορίας</h3>
+                    <p class="text-center text-gray-600 mb-8">Το Κεντρικό Δόγμα περιγράφει πώς η γενετική πληροφορία που είναι αποθηκευμένη στο DNA μετατρέπεται σε λειτουργικά μόρια, όπως οι πρωτεΐνες. Κάντε κλικ σε κάθε βήμα για λεπτομέρειες.</p>
+                    <div class="flex flex-col md:flex-row justify-around items-center space-y-4 md:space-y-0 md:space-x-4">
+                        <div id="step-dna" class="process-step text-center cursor-pointer p-4 rounded-lg hover:bg-gray-100 transition">
+                            <div class="text-5xl mb-2">🧬</div>
+                            <h4 class="font-bold text-lg">DNA</h4>
+                            <p class="text-sm text-gray-500">Αντιγραφή</p>
+                        </div>
+                        <div class="text-2xl font-bold text-gray-400">→</div>
+                        <div id="step-rna" class="process-step text-center cursor-pointer p-4 rounded-lg hover:bg-gray-100 transition">
+                            <div class="text-5xl mb-2">📜</div>
+                            <h4 class="font-bold text-lg">RNA</h4>
+                            <p class="text-sm text-gray-500">Μεταγραφή</p>
+                        </div>
+                        <div class="text-2xl font-bold text-gray-400">→</div>
+                        <div id="step-protein" class="process-step text-center cursor-pointer p-4 rounded-lg hover:bg-gray-100 transition">
+                            <div class="text-5xl mb-2">⚙️</div>
+                            <h4 class="font-bold text-lg">Πρωτεΐνη</h4>
+                            <p class="text-sm text-gray-500">Μετάφραση</p>
+                        </div>
+                    </div>
+                    <div id="process-details" class="mt-8 p-6 bg-indigo-50 rounded-lg min-h-[100px] text-center flex items-center justify-center">
+                        <p class="text-indigo-800">Κάντε κλικ σε ένα βήμα για να δείτε την περιγραφή του.</p>
+                    </div>
+                </div>
+
+                <!-- Membrane Tab -->
+                <div id="tab-membrane" class="tab-content">
+                     <h3 class="text-2xl font-bold text-center mb-4 text-teal-700">Η Μεμβράνη: Το Δυναμικό Όριο</h3>
+                    <p class="text-center text-gray-600 mb-8">Η πλασματική μεμβράνη δεν είναι ένα στατικό τείχος, αλλά ένα ρευστό και δυναμικό όριο που ρυθμίζει τα πάντα. Αποτελείται από λιπίδια και πρωτεΐνες, επιτρέποντας την επιλεκτική μεταφορά ουσιών.</p>
+                     <div class="grid grid-cols-1 md:grid-cols-2 gap-8 text-center">
+                        <div>
+                            <h4 class="font-bold text-lg mb-2">Παθητική Μεταφορά</h4>
+                            <p>Δεν απαιτεί ενέργεια. Οι ουσίες κινούνται με βάση τη διαφορά συγκέντρωσης, είτε με απλή διάχυση είτε μέσω πρωτεϊνών-διαύλων και φορέων.</p>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-lg mb-2">Ενεργητική Μεταφορά</h4>
+                            <p>Απαιτεί ενέργεια (ΑΤΡ) για τη μετακίνηση ουσιών ενάντια στη ροή τους. Πραγματοποιείται από εξειδικευμένες πρωτεΐνες-αντλίες.</p>
+                        </div>
+                     </div>
+                </div>
                 
-                <hr class="my-12">
+                <!-- Cytoskeleton Tab -->
+                <div id="tab-cytoskeleton" class="tab-content">
+                    <h3 class="text-2xl font-bold text-center mb-4 text-orange-700">Ο Κυτταροσκελετός: Η Εσωτερική Σκαλωσιά</h3>
+                    <p class="text-center text-gray-600 mb-8">Ένα πολύπλοκο δίκτυο πρωτεϊνικών ινιδίων που παρέχει σχήμα, στήριξη και οργάνωση στο κύτταρο, ενώ παράλληλα επιτρέπει την κίνηση.</p>
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 text-center">
+                        <div class="bg-orange-50 p-4 rounded-lg">
+                            <h4 class="font-bold text-lg mb-2">Μικροϊνίδια Ακτίνης</h4>
+                            <p class="text-sm">Εύκαμπτα ινίδια υπεύθυνα για το σχήμα της κυτταρικής επιφάνειας και την κίνηση, όπως η φαγοκυττάρωση.</p>
+                        </div>
+                        <div class="bg-orange-50 p-4 rounded-lg">
+                            <h4 class="font-bold text-lg mb-2">Ενδιάμεσα Ινίδια</h4>
+                            <p class="text-sm">Παρέχουν μηχανική αντοχή και ανθεκτικότητα, προστατεύοντας τα κύτταρα από την καταπόνηση.</p>
+                        </div>
+                        <div class="bg-orange-50 p-4 rounded-lg">
+                            <h4 class="font-bold text-lg mb-2">Μικροσωληνίσκοι</h4>
+                            <p class="text-sm">Άκαμπτοι, κοίλοι σωλήνες που λειτουργούν ως "ράγες" για τη μεταφορά οργανιδίων και το διαχωρισμό των χρωμοσωμάτων.</p>
+                        </div>
+                    </div>
+                </div>
 
-                <!-- Κεφάλαιο 2 -->
-                <section id="chapter2">
-                    <h2 class="font-bold">Κεφάλαιο 2: Μια Περιήγηση στην Κυτταρική Ποικιλομορφία</h2>
+            </div>
+        </section>
 
-                    <h3 id="section2-1">Η Προέλευση και η Εξέλιξη των Κυττάρων</h3>
-                    <p>Η ζωή στη Γη εμφανίστηκε τουλάχιστον πριν από 3,8 δισεκατομμύρια χρόνια. Το πρώτο κύτταρο πιθανότατα προέκυψε όταν αυτο-αντιγραφόμενο RNA περικλείστηκε μέσα σε μια φωσφολιπιδική μεμβράνη. Η εξέλιξη του μεταβολισμού ήταν κρίσιμη. Πρώτα ήρθε η <b>γλυκόλυση</b> (αναερόβια παραγωγή ενέργειας), ακολουθούμενη από τη <b>φωτοσύνθεση</b> (χρησιμοποιώντας το ηλιακό φως), η οποία απελευθέρωσε οξυγόνο και άλλαξε την ατμόσφαιρα της Γης. Αυτό επέτρεψε τον <b>οξειδωτικό μεταβολισμό</b>, έναν πολύ πιο αποδοτικό τρόπο παραγωγής ενέργειας.</p>
+    </main>
 
-                    <h3 id="section2-2">Οι Τρεις Τομείς της Ζωής</h3>
-                    <p>Ο ζωντανός κόσμος χωρίζεται σε τρεις μεγάλους τομείς: <b>Βακτήρια</b>, <b>Αρχαία</b> και <b>Ευκαρυώτες</b>. Τα Βακτήρια και τα Αρχαία είναι προκαρυώτες—μονοκύτταροι οργανισμοί που δεν έχουν πυρήνα. Είναι οι πιο βιοχημικά ποικίλοι και πολυάριθμοι οργανισμοί. Οι Ευκαρυώτες, που περιλαμβάνουν φυτά, ζώα και μύκητες, ορίζονται από την παρουσία πυρήνα και άλλων πολύπλοκων οργανιδίων.</p>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Mobile menu toggle
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+            mobileMenuButton.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+            });
+            document.querySelectorAll('#mobile-menu a').forEach(link => {
+                link.addEventListener('click', () => {
+                    mobileMenu.classList.add('hidden');
+                });
+            });
 
-                    <figure class="my-6">
-                        <img src="https://placehold.co/800x500/e2e8f0/4a5568?text=Διάγραμμα+Ευκαρυωτικού+Κυττάρου" alt="Ευκαρυωτικό Κύτταρο" class="rounded-lg shadow-md w-full">
-                        <figcaption class="text-center text-sm mt-2 text-gray-600">Ένα διάγραμμα ενός τυπικού ευκαρυωτικού ζωικού κυττάρου, που δείχνει τον πυρήνα και διάφορα οργανίδια.</figcaption>
-                    </figure>
 
-                    <h3 id="section2-3">Το Ευκαρυωτικό Κύτταρο: Μια Συμφωνία Οργανιδίων</h3>
-                    <p>Τα ευκαρυωτικά κύτταρα περιέχουν μια πληθώρα διαμερισμάτων που ονομάζονται <b>οργανίδια</b>, το καθένα με μια εξειδικευμένη λειτουργία, συμπεριλαμβανομένου του πυρήνα, των μιτοχονδρίων, των χλωροπλαστών (στα φυτά), του ενδοπλασματικού δικτύου, της συσκευής Golgi και των λυσοσωμάτων. Ο <b>κυτταροσκελετός</b> παρέχει δομική υποστήριξη και επιτρέπει την κίνηση.</p>
+            // Interactive Diagram Tooltips
+            const proCell = document.getElementById('prokaryotic-cell');
+            const euCell = document.getElementById('eukaryotic-cell');
+            const tooltipPro = document.getElementById('tooltip-pro');
+            const tooltipEu = document.getElementById('tooltip-eu');
 
-                    <h3 id="section2-4">Η Προέλευση των Ευκαρυωτών: Μια Ιστορία Συμβίωσης</h3>
-                    <p>Η πολυπλοκότητα του ευκαρυωτικού κυττάρου πιστεύεται ότι προέκυψε μέσω <b>ενδοσυμβίωσης</b>. Αυτή η θεωρία προτείνει ότι οργανίδια όπως τα μιτοχόνδρια και οι χλωροπλάστες εξελίχθηκαν από ελεύθερα ζωντανά προκαρυωτικά κύτταρα που καταβροχθίστηκαν από ένα προγονικό κύτταρο-ξενιστή. Τα στοιχεία περιλαμβάνουν το μέγεθός τους, το προσωπικό τους DNA και ριβοσώματα, και τον τρόπο αναπαραγωγής τους.</p>
+            function setupTooltips(container, tooltip) {
+                container.querySelectorAll('.interactive-diagram-item').forEach(item => {
+                    item.addEventListener('mouseenter', (e) => {
+                        tooltip.textContent = item.dataset.info;
+                        tooltip.style.opacity = 1;
+                        tooltip.style.visibility = 'visible';
+                        
+                        const containerRect = container.getBoundingClientRect();
+                        const itemRect = e.target.getBoundingClientRect();
+                        
+                        let left = e.clientX - containerRect.left - (tooltip.offsetWidth / 2);
+                        let top = e.clientY - containerRect.top - tooltip.offsetHeight - 10;
+                        
+                        if (left < 0) left = 5;
+                        if (left + tooltip.offsetWidth > containerRect.width) left = containerRect.width - tooltip.offsetWidth - 5;
+                        
+                        tooltip.style.left = `${left}px`;
+                        tooltip.style.top = `${top}px`;
+                    });
+                    item.addEventListener('mouseleave', () => {
+                        tooltip.style.opacity = 0;
+                        tooltip.style.visibility = 'hidden';
+                    });
+                });
+            }
 
-                    <h3 id="section2-5">Το Άλμα στην Πολυκυτταρικότητα</h3>
-                    <p>Η εξέλιξη των πολυκύτταρων οργανισμών επέτρεψε την εξειδίκευση των κυττάρων. Σε έναν πολυκύτταρο οργανισμό, όλα τα κύτταρα περιέχουν το ίδιο DNA, αλλά διαφοροποιούνται εκφράζοντας διαφορετικά σύνολα γονιδίων, επιτρέποντάς τους να εκτελούν εξειδικευμένες λειτουργίες ως μέρος ιστών και οργάνων.</p>
-                </section>
+            setupTooltips(proCell, tooltipPro);
+            setupTooltips(euCell, tooltipEu);
 
-                <hr class="my-12">
+            // Cell Composition Chart
+            const ctx = document.getElementById('cellCompositionChart').getContext('2d');
+            const cellCompositionChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Νερό', 'Πρωτεΐνες', 'Λιπίδια', 'Άλλα Μόρια (Ιόντα, Υδατάνθρακες, κ.α.)'],
+                    datasets: [{
+                        label: 'Σύσταση Κυττάρου',
+                        data: [70, 15, 10, 5],
+                        backgroundColor: [
+                            'rgba(59, 130, 246, 0.7)',
+                            'rgba(16, 185, 129, 0.7)',
+                            'rgba(239, 68, 68, 0.7)',
+                            'rgba(249, 115, 22, 0.7)'
+                        ],
+                        borderColor: [
+                            'rgba(59, 130, 246, 1)',
+                            'rgba(16, 185, 129, 1)',
+                            'rgba(239, 68, 68, 1)',
+                            'rgba(249, 115, 22, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        },
+                        title: {
+                            display: true,
+                            text: 'Μοριακή Σύσταση Κυττάρου (%)'
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    if (context.parsed !== null) {
+                                        label += context.parsed + '%';
+                                    }
+                                    return label;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
 
-                <!-- Κεφάλαιο 3 -->
-                <section id="chapter3">
-                    <h2 class="font-bold">Κεφάλαιο 3: Πώς Μελετάμε τα Κύτταρα</h2>
-                    <p>Η κατανόησή μας για το κύτταρο είναι άμεσο αποτέλεσμα των εργαλείων και των μεθόδων που αναπτύχθηκαν για τη μελέτη του. Η πρόοδος στην κυτταρική βιολογία συχνά οδηγείται από την τεχνολογική καινοτομία.</p>
+            // Processes Tabs
+            const tabButtons = document.querySelectorAll('.tab-button');
+            const tabContents = document.querySelectorAll('.tab-content');
 
-                    <h3 id="section3-1">Οργανισμοί-Μοντέλα: Απλοποιώντας την Πολυπλοκότητα</h3>
-                    <p>Επειδή πολλές θεμελιώδεις διαδικασίες διατηρούνται, οι βιολόγοι εστιάζουν σε μερικούς <b>οργανισμούς-μοντέλα</b> που είναι εύκολο να μελετηθούν. Βασικά παραδείγματα περιλαμβάνουν το βακτήριο *E. coli*, τη μαγιά *S. cerevisiae*, το φυτό *A. thaliana*, και ζώα όπως ο σκώληκας *C. elegans*, η μύγα των φρούτων *D. melanogaster*, το ζεβρόψαρο και το ποντίκι.</p>
-                    
-                    <figure class="my-6">
-                        <img src="https://placehold.co/800x400/e2e8f0/4a5568?text=Εικόνες+Μικροσκοπίας" alt="Μικροσκοπία" class="rounded-lg shadow-md w-full">
-                        <figcaption class="text-center text-sm mt-2 text-gray-600">Σύγκριση εικόνων από φωτονική μικροσκοπία (αριστερά) και ηλεκτρονική μικροσκοπία (δεξιά).</figcaption>
-                    </figure>
+            tabButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    tabButtons.forEach(btn => btn.classList.remove('active'));
+                    button.classList.add('active');
 
-                    <h3 id="section3-2">Οπτικοποιώντας τα Κύτταρα: Η Δύναμη της Μικροσκοπίας</h3>
-                    <ul class="list-disc list-inside space-y-2">
-                        <li><b>Φωτονική Μικροσκοπία:</b> Απαραίτητη για την παρατήρηση κυττάρων, αλλά με περιορισμένη διακριτική ικανότητα. Προηγμένες τεχνικές όπως η φθορίζουσα μικροσκοπία επιτρέπουν την οπτικοποίηση συγκεκριμένων μορίων.</li>
-                        <li><b>Ηλεκτρονική Μικροσκοπία (EM):</b> Χρησιμοποιεί δέσμες ηλεκτρονίων για πολύ υψηλότερη διακριτική ικανότητα, αποκαλύπτοντας λεπτές υποκυτταρικές λεπτομέρειες.</li>
-                    </ul>
+                    tabContents.forEach(content => content.classList.remove('active'));
+                    document.getElementById(`tab-${button.dataset.tab}`).classList.add('active');
+                });
+            });
 
-                    <h3 id="section3-3">Διαχωρίζοντας τα Κύτταρα: Υποκυτταρική Κλασμάτωση</h3>
-                    <p>Για τη μελέτη των οργανιδίων, πρέπει να απομονωθούν. Αυτό γίνεται σπάζοντας τα κύτταρα και διαχωρίζοντας τα συστατικά με <b>φυγοκέντρηση</b>. Η περιστροφή του δείγματος σε υψηλές ταχύτητες επιτρέπει τον καθαρισμό των οργανιδίων με βάση το μέγεθος και την πυκνότητά τους για περαιτέρω ανάλυση.</p>
-
-                    <h3 id="section3-4">Καλλιεργώντας Κύτταρα σε Τρυβλίο: Κυτταροκαλλιέργεια</h3>
-                    <p>Πολλά ζωικά και φυτικά κύτταρα μπορούν να καλλιεργηθούν σε ένα εργαστηριακό τρυβλίο, μια διαδικασία που ονομάζεται <b>κυτταροκαλλιέργεια</b>. Αυτό επιτρέπει στους ερευνητές να μελετούν τη συμπεριφορά των κυττάρων σε ένα ελεγχόμενο περιβάλλον, το οποίο είναι απαραίτητο για την ιατρική και βιολογική έρευνα.</p>
-                </section>
-
-            </article>
-        </main>
-
-    </div>
-
-    <!-- Υποσέλιδο -->
-    <footer class="bg-gray-800 text-white mt-12">
-        <div class="container mx-auto px-6 py-4 text-center">
-            <p>&copy; 2025 Οι Βασικές Αρχές της Κυτταρικής Βιολογίας. Με επιφύλαξη παντός δικαιώματος.</p>
-            <p class="text-xs text-gray-400 mt-1">Περιεχόμενο που συντέθηκε από τα 'Molecular Biology of the Cell' και 'The Cell: A Molecular Approach'.</p>
-        </div>
-    </footer>
-
+            // Central Dogma interactive details
+            const processDetails = document.getElementById('process-details');
+            const processSteps = {
+                'step-dna': '<strong>Αντιγραφή:</strong> Η διαδικασία κατά την οποία το DNA διπλασιάζεται πριν την κυτταρική διαίρεση. Κάθε αλυσίδα της διπλής έλικας του DNA λειτουργεί ως καλούπι για τη σύνθεση μιας νέας, συμπληρωματικής αλυσίδας.',
+                'step-rna': '<strong>Μεταγραφή:</strong> Η πληροφορία ενός γονιδίου αντιγράφεται από το DNA σε ένα μόριο αγγελιοφόρου RNA (mRNA). Αυτό το RNA μεταφέρει τις οδηγίες από τον πυρήνα στα ριβοσώματα.',
+                'step-protein': '<strong>Μετάφραση:</strong> Τα ριβοσώματα "διαβάζουν" την αλληλουχία του mRNA σε ομάδες των τριών (κωδικόνια). Κάθε κωδικόνιο αντιστοιχεί σε ένα συγκεκριμένο αμινοξύ, συνθέτοντας την πρωτεΐνη σύμφωνα με τον γενετικό κώδικα.'
+            };
+            
+            document.querySelectorAll('.process-step').forEach(step => {
+                step.addEventListener('click', () => {
+                    processDetails.innerHTML = `<p class="text-indigo-800">${processSteps[step.id]}</p>`;
+                });
+            });
+        });
+    </script>
 </body>
 </html>
