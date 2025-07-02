@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Οπτικοποιώντας τον Κυτταρικό Κόσμο</title>
+    <!-- Tailwind CSS via CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Inter for modern typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        /* Custom styles for an enhanced, educational look and feel */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc; /* gray-50 */
+        }
+        .header-gradient {
+            background: linear-gradient(90deg, #0284c7, #06b6d4);
+        }
+        .content-card {
+            background-color: #ffffff;
+            border: 1px solid #e5e7eb; /* gray-200 */
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .content-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+        }
+        .card-title {
+            color: #0369a1; /* sky-700 */
+            border-bottom: 2px solid #e0f2fe; /* sky-100 */
+            padding-bottom: 0.75rem;
+        }
+        .highlight {
+            color: #0ea5e9; /* sky-500 */
+            font-weight: 600;
+        }
+        .icon {
+            display: inline-block;
+            width: 1.5em;
+            height: 1.5em;
+            margin-right: 0.5rem;
+            vertical-align: middle;
+        }
+    </style>
+</head>
+<body class="text-gray-800">
+
+    <!-- Header Section -->
+    <header class="header-gradient text-white p-8 md:p-12 text-center rounded-b-3xl mb-12 shadow-lg">
+        <h1 class="text-4xl md:text-5xl font-bold mb-3 tracking-tight">Οπτικοποιώντας τον Κυτταρικό Κόσμο</h1>
+        <p class="text-lg md:text-xl max-w-3xl mx-auto text-sky-100">Μια εκπαιδευτική εξερεύνηση στις τεχνολογίες μικροσκοπίας που αποκαλύπτουν τα μυστικά της ζωής.</p>
+    </header>
+
+    <div class="container mx-auto px-4 lg:px-8 space-y-12">
+
+        <!-- Section 1: Light Microscopy -->
+        <section class="content-card rounded-xl shadow-md p-6 md:p-8">
+            <h2 class="card-title text-3xl font-bold mb-6 flex items-center">
+                <svg class="icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 18v-5.25m0 0a6.01 6.01 0 0 0 1.5-.189m-1.5.189a6.01 6.01 0 0 1-1.5-.189m3.75 7.478a12.06 12.06 0 0 1-4.5 0m3.75 2.311a7.5 7.5 0 0 1-7.5 0c-1.421 0-2.8 0-4.125-.342M3 12a9 9 0 1 1 18 0a9 9 0 0 1-18 0Z" /></svg>
+                Μέρος 1: Το Φωτονικό Μικροσκόπιο
+            </h2>
+            <div class="space-y-4 text-lg leading-relaxed">
+                <p>Το παράθυρό μας στον ζωντανό κόσμο. Το φωτονικό μικροσκόπιο μας επιτρέπει να παρατηρούμε δυναμικές διαδικασίες σε ζωντανά κύτταρα, αν και η <span class="highlight">διακριτική του ικανότητα</span> περιορίζεται από τη φύση του φωτός στα ~200 nm.</p>
+                <ul class="list-disc list-inside space-y-2 pl-4">
+                    <li><strong class="highlight">Μικροσκοπία Φθορισμού:</strong> Χρησιμοποιώντας φθορίζουσες "ετικέτες" (όπως αντισώματα), μπορούμε να εντοπίσουμε και να χρωματίσουμε συγκεκριμένα μόρια, αποκαλύπτοντας την ακριβή τους θέση.</li>
+                    <li><strong class="highlight">Συνεστιακή Μικροσκοπία (Confocal):</strong> Δημιουργεί ευκρινείς οπτικές τομές απορρίπτοντας το "θόλωμα" από τα εκτός εστίασης επίπεδα. Συνθέτοντας αυτές τις τομές, ανακατασκευάζουμε την τρισδιάστατη αρχιτεκτονική του κυττάρου.</li>
+                    <li><strong class="highlight">Ζωντανή Απεικόνιση με GFP:</strong> Η Πράσινη Φθορίζουσα Πρωτεΐνη (GFP) μας επιτρέπει να παρακολουθούμε πρωτεΐνες σε πραγματικό χρόνο, καθώς το ίδιο το κύτταρο παράγει τη φθορίζουσα ετικέτα.</li>
+                    <li><strong class="highlight">Υπερ-διακριτική Μικροσκοπία:</strong> Επαναστατικές τεχνικές (STED, PALM) "σπάνε" το όριο των 200 nm, επιτρέποντάς μας να δούμε δομές με λεπτομέρεια που πλησιάζει τα 20 nm.</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Section 2: Electron Microscopy -->
+        <section class="content-card rounded-xl shadow-md p-6 md:p-8">
+            <h2 class="card-title text-3xl font-bold mb-6 flex items-center">
+                <svg class="icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" /></svg>
+                Μέρος 2: Το Ηλεκτρονικό Μικροσκόπιο
+            </h2>
+            <div class="space-y-4 text-lg leading-relaxed">
+                <p>Για μια "βουτιά" στην υπερδομή του κυττάρου, χρειαζόμαστε την ισχύ του ηλεκτρονικού μικροσκοπίου. Χρησιμοποιώντας δέσμες ηλεκτρονίων, επιτυγχάνει χιλιάδες φορές μεγαλύτερη μεγέθυνση και ανάλυση από το φως.</p>
+                <ul class="list-disc list-inside space-y-2 pl-4">
+                    <li><strong class="highlight">Προετοιμασία & Βαφή:</strong> Τα δείγματα πρέπει να είναι εξαιρετικά λεπτές τομές και "βαμμένα" με βαρέα μέταλλα που σκεδάζουν τα ηλεκτρόνια, δημιουργώντας τις ασπρόμαυρες εικόνες που γνωρίζουμε.</li>
+                    <li><strong class="highlight">Κρυο-ηλεκτρονική Μικροσκοπία (Cryo-EM):</strong> Η ταχεία κατάψυξη διατηρεί τις κυτταρικές δομές στην πιο φυσική τους κατάσταση, αποφεύγοντας τις αλλοιώσεις της χημικής μονιμοποίησης.</li>
+                    <li><strong class="highlight">Ηλεκτρονική Τομογραφία:</strong> Όπως η αξονική τομογραφία στην ιατρική, συνδυάζει εικόνες από πολλές γωνίες για να δημιουργήσει μια πλήρη 3D αναπαράσταση ενός οργανιδίου ή κυτταρικής περιοχής.</li>
+                    <li><strong class="highlight">Ανάλυση Μεμονωμένων Μορίων:</strong> Η Cryo-EM μπορεί να αποκαλύψει την τρισδιάστατη δομή τεράστιων μοριακών συμπλόκων, όπως ιοί και ριβοσώματα, σε σχεδόν ατομική λεπτομέρεια.</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="text-center my-12 text-gray-500">
+            <p>&copy; <?php echo date("Y"); ?>. Σύνοψη βασισμένη στο "Molecular Biology of the Cell".</p>
+            <p>Αυτή η ιστοσελίδα δημιουργήθηκε για εκπαιδευτικούς σκοπούς.</p>
+        </footer>
+
+    </div>
+
+</body>
+</html>
