@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-<!DOCTYPE html>
 <html lang="el" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
@@ -11,12 +10,13 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <!-- Chosen Palette: Warm Neutrals with Muted Biological Tones -->
-    <!-- Application Structure Plan: The SPA uses a non-linear, dashboard-style layout with a persistent top navigation bar to facilitate free exploration. The content is reorganized from the source report's linear chapters into three thematic sections: "The World of the Cell," "The Building Blocks," and "Cellular Processes." This structure is chosen to group related concepts logically, making them more digestible and allowing users to compare and connect ideas across different biological scales (from whole cells to molecules to processes). Interactions include hover-to-reveal information on diagrams, clickable tabs for focused content, and an interactive chart to visualize conceptual data, enhancing engagement and understanding over a static text format. -->
+    <!-- Application Structure Plan: The SPA uses a non-linear, dashboard-style layout with a persistent top navigation bar to facilitate free exploration. The content is reorganized from the source report's linear chapters into three thematic sections: "The World of the Cell," "The Building Blocks," and "Cellular Processes." This structure is chosen to group related concepts logically, making them more digestible and allowing users to compare and connect ideas across different biological scales (from whole cells to molecules to processes). Interactions include hover-to-reveal information on diagrams, clickable tabs for focused content, and an interactive chart to visualize conceptual data, enhancing engagement and understanding over a static text format. Gemini API features have been added to generate analogies and simplified explanations for complex topics. -->
     <!-- Visualization & Content Choices: 
         1. Prokaryotic vs. Eukaryotic Diagram -> Goal: Compare/Inform -> Method: Interactive HTML/CSS diagram with hover effects -> Interaction: Hover over labels to highlight parts and show tooltips with definitions -> Justification: A direct, visual comparison is more effective for learning structural differences than text alone. The interactivity encourages exploration. -> Method: HTML/CSS/JS.
         2. Macromolecule Cards -> Goal: Organize -> Method: Four distinct, styled cards in a grid layout -> Interaction: Static but visually segregated -> Justification: Breaks the dense topic of macromolecules into four clear, parallel concepts, aiding comprehension and retention. -> Method: HTML/CSS (Tailwind Grid).
-        3. Central Dogma Flowchart -> Goal: Organize/Inform -> Method: A visual flowchart using HTML/CSS -> Interaction: Clickable steps (Replication, Transcription, Translation) that reveal detailed explanations -> Justification: Simplifies a complex, multi-step process into an easy-to-follow visual path, with details available on demand to avoid overwhelming the user. -> Method: HTML/CSS/JS.
+        3. Central Dogma Flowchart -> Goal: Organize/Inform -> Method: A visual flowchart using HTML/CSS -> Interaction: Clickable steps (Replication, Transcription, Translation) that reveal detailed explanations, plus a Gemini button to simplify the concept. -> Justification: Simplifies a complex, multi-step process into an easy-to-follow visual path, with details available on demand to avoid overwhelming the user. -> Method: HTML/CSS/JS/Gemini API.
         4. Cell Composition Donut Chart -> Goal: Inform -> Method: Chart.js Canvas -> Interaction: Hover over segments to see tooltips with percentages -> Justification: Provides a quick, quantitative-style visual summary of a cell's chemical makeup, making an abstract concept more concrete and memorable. -> Library: Chart.js.
+        5. Gemini Analogy Generator -> Goal: Enhance Understanding -> Method: Button click triggers API call -> Interaction: User clicks button to receive a simplified analogy for a complex topic (e.g., Endosymbiotic Theory). -> Justification: Leverages LLMs to provide alternative, creative explanations that can improve learning and retention for diverse audiences. -> Library/Method: Gemini API via Fetch.
     -->
     <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
     <style>
@@ -53,6 +53,31 @@
         .tab-content.active {
             display: block;
         }
+        .gemini-response {
+            background-color: #f3e8ff;
+            border-left: 4px solid #9333ea;
+            padding: 1rem;
+            margin-top: 1rem;
+            border-radius: 0.5rem;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .loader {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #3498db;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            animation: spin 1s linear infinite;
+            margin: 1rem auto;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
     </style>
 </head>
 <body class="text-gray-800">
@@ -66,7 +91,7 @@
                 <a href="#section-molecules" class="text-gray-600 hover:text-blue-600 transition">Τα Δομικά Υλικά</a>
                 <a href="#section-processes" class="text-gray-600 hover:text-blue-600 transition">Οι Λειτουργίες</a>
             </div>
-            <button id="mobile-menu-button" class="md:hidden text-gray-700">
+            <button id="mobile-menu-button" class="md:hidden text-gray-700 focus:outline-none">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
             </button>
         </nav>
@@ -134,6 +159,13 @@
              <div class="mt-12 bg-white p-6 rounded-xl shadow-lg">
                 <h3 class="text-2xl font-bold mb-4 text-center">Σύγκριση & Σύνθεση</h3>
                 <p class="text-center text-gray-600">Η κύρια διαφορά είναι η παρουσία του <strong>πυρήνα</strong> και άλλων μεμβρανωδών οργανιδίων στα ευκαρυωτικά κύτταρα, επιτρέποντας μεγαλύτερη πολυπλοκότητα και εξειδίκευση. Η <strong>ενδοσυμβιωτική θεωρία</strong> εξηγεί πώς οργανίδια όπως τα μιτοχόνδρια προέκυψαν από την ενσωμάτωση προκαρυωτικών οργανισμών, ένα κρίσιμο βήμα στην εξέλιξη της ζωής.</p>
+                <div class="text-center mt-4">
+                    <button id="gemini-analogy-btn" class="bg-purple-600 text-white font-bold py-2 px-4 rounded-full hover:bg-purple-700 transition-all duration-300 transform hover:scale-105">
+                        ✨ Εξήγησέ το με μια Αναλογία
+                    </button>
+                    <div id="gemini-analogy-loader" class="loader hidden"></div>
+                    <div id="gemini-analogy-response" class="gemini-response hidden text-left"></div>
+                </div>
                 <div class="chart-container mt-8">
                     <canvas id="cellCompositionChart"></canvas>
                 </div>
@@ -175,7 +207,7 @@
             <p class="text-center text-gray-600 max-w-3xl mx-auto mb-12">Από τη διαχείριση της ροής πληροφοριών μέχρι την κίνηση και τη διατήρηση της δομής, οι κυτταρικές λειτουργίες είναι ένα θαύμα συντονισμού και αποτελεσματικότητας. Επιλέξτε μια κατηγορία για να εξερευνήσετε τις βασικές διαδικασίες που κρατούν το κύτταρο ζωντανό.</p>
             
             <div class="bg-white p-6 rounded-xl shadow-lg">
-                <div class="flex justify-center border-b mb-6">
+                <div class="flex flex-wrap justify-center border-b mb-6">
                     <button class="tab-button active py-2 px-4 font-semibold" data-tab="dogma">Κεντρικό Δόγμα</button>
                     <button class="tab-button py-2 px-4 font-semibold" data-tab="membrane">Κυτταρική Μεμβράνη</button>
                     <button class="tab-button py-2 px-4 font-semibold" data-tab="cytoskeleton">Κυτταροσκελετός</button>
@@ -206,6 +238,13 @@
                     </div>
                     <div id="process-details" class="mt-8 p-6 bg-indigo-50 rounded-lg min-h-[100px] text-center flex items-center justify-center">
                         <p class="text-indigo-800">Κάντε κλικ σε ένα βήμα για να δείτε την περιγραφή του.</p>
+                    </div>
+                    <div class="text-center mt-6">
+                        <button id="gemini-dogma-btn" class="bg-indigo-600 text-white font-bold py-2 px-4 rounded-full hover:bg-indigo-700 transition-all duration-300 transform hover:scale-105">
+                            ✨ Κάνε το πιο Απλό
+                        </button>
+                        <div id="gemini-dogma-loader" class="loader hidden"></div>
+                        <div id="gemini-dogma-response" class="gemini-response hidden text-left"></div>
                     </div>
                 </div>
 
@@ -302,7 +341,7 @@
 
             // Cell Composition Chart
             const ctx = document.getElementById('cellCompositionChart').getContext('2d');
-            const cellCompositionChart = new Chart(ctx, {
+            new Chart(ctx, {
                 type: 'doughnut',
                 data: {
                     labels: ['Νερό', 'Πρωτεΐνες', 'Λιπίδια', 'Άλλα Μόρια (Ιόντα, Υδατάνθρακες, κ.α.)'],
@@ -328,23 +367,14 @@
                     responsive: true,
                     maintainAspectRatio: false,
                     plugins: {
-                        legend: {
-                            position: 'top',
-                        },
-                        title: {
-                            display: true,
-                            text: 'Μοριακή Σύσταση Κυττάρου (%)'
-                        },
+                        legend: { position: 'top' },
+                        title: { display: true, text: 'Μοριακή Σύσταση Κυττάρου (%)' },
                         tooltip: {
                             callbacks: {
                                 label: function(context) {
                                     let label = context.label || '';
-                                    if (label) {
-                                        label += ': ';
-                                    }
-                                    if (context.parsed !== null) {
-                                        label += context.parsed + '%';
-                                    }
+                                    if (label) { label += ': '; }
+                                    if (context.parsed !== null) { label += context.parsed + '%'; }
                                     return label;
                                 }
                             }
@@ -379,6 +409,62 @@
                 step.addEventListener('click', () => {
                     processDetails.innerHTML = `<p class="text-indigo-800">${processSteps[step.id]}</p>`;
                 });
+            });
+
+            // Gemini API Integration
+            const analogyBtn = document.getElementById('gemini-analogy-btn');
+            const dogmaBtn = document.getElementById('gemini-dogma-btn');
+
+            async function handleGeminiRequest(prompt, button, loader, responseContainer) {
+                loader.classList.remove('hidden');
+                responseContainer.classList.add('hidden');
+                button.disabled = true;
+
+                let chatHistory = [{ role: "user", parts: [{ text: prompt }] }];
+                const payload = { contents: chatHistory };
+                const apiKey = ""; 
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+
+                try {
+                    const response = await fetch(apiUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+
+                    const result = await response.json();
+                    
+                    if (result.candidates && result.candidates.length > 0 &&
+                        result.candidates[0].content && result.candidates[0].content.parts &&
+                        result.candidates[0].content.parts.length > 0) {
+                        const text = result.candidates[0].content.parts[0].text;
+                        responseContainer.innerHTML = text.replace(/\n/g, '<br>');
+                        responseContainer.classList.remove('hidden');
+                    } else {
+                        throw new Error('Invalid API response structure.');
+                    }
+                } catch (error) {
+                    console.error("Gemini API Error:", error);
+                    responseContainer.innerHTML = 'Παρουσιάστηκε σφάλμα. Παρακαλώ δοκιμάστε ξανά αργότερα.';
+                    responseContainer.classList.remove('hidden');
+                } finally {
+                    loader.classList.add('hidden');
+                    button.disabled = false;
+                }
+            }
+
+            analogyBtn.addEventListener('click', () => {
+                const prompt = "Please provide a simple analogy in Modern Greek to explain the endosymbiotic theory. The theory suggests that eukaryotic organelles like mitochondria originated from free-living prokaryotes that were engulfed by another cell. The analogy should be easy for a high school student to understand.";
+                handleGeminiRequest(prompt, analogyBtn, document.getElementById('gemini-analogy-loader'), document.getElementById('gemini-analogy-response'));
+            });
+
+            dogmaBtn.addEventListener('click', () => {
+                const prompt = "Please explain the Central Dogma of molecular biology (DNA -> RNA -> Protein) in very simple terms in Modern Greek. Use a simple metaphor, like a library and a factory, to make it easy to understand for someone with no biology background.";
+                handleGeminiRequest(prompt, dogmaBtn, document.getElementById('gemini-dogma-loader'), document.getElementById('gemini-dogma-response'));
             });
         });
     </script>
