@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Εισαγωγή στα Κύτταρα: Μια Περιεκτική Σύνοψη</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc; /* Tailwind gray-50 */
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .tab-button {
+            transition: all 0.3s ease;
+        }
+        .tab-button.active {
+            background-color: #4f46e5; /* Tailwind indigo-600 */
+            color: white;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+        }
+        .content-card {
+            background-color: white;
+            border-radius: 0.75rem;
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+            padding: 2rem;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        h2 {
+            font-size: 1.875rem; /* text-3xl */
+            font-weight: 700;
+            color: #1e293b; /* gray-800 */
+            border-bottom: 2px solid #6366f1; /* indigo-500 */
+            padding-bottom: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+        h3 {
+            font-size: 1.5rem; /* text-2xl */
+            font-weight: 600;
+            color: #334155; /* gray-700 */
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+        }
+        p, li {
+            font-size: 1.125rem; /* text-lg */
+            line-height: 1.75;
+            color: #475569; /* gray-600 */
+        }
+        ul {
+            list-style-type: disc;
+            padding-left: 2rem;
+            margin-top: 1rem;
+        }
+        strong {
+            color: #1e293b; /* gray-800 */
+        }
+        figure {
+            margin-top: 1.5rem;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+        figcaption {
+            margin-top: 0.5rem;
+            font-style: italic;
+            color: #64748b; /* gray-500 */
+        }
+        .image-placeholder {
+            background-color: #e5e7eb; /* gray-200 */
+            border-radius: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #4b5563; /* gray-600 */
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body class="p-4 sm:p-6 md:p-8">
+
+    <div class="max-w-7xl mx-auto">
+        <header class="text-center mb-10">
+            <h1 class="text-4xl md:text-5xl font-bold text-gray-900">Εισαγωγή στα Κύτταρα</h1>
+            <p class="mt-4 text-xl text-gray-600">Μια περιεκτική σύνοψη για τις θεμελιώδεις αρχές της κυτταρικής βιολογίας, τη δομή και τη λειτουργία των κυττάρων.</p>
+        </header>
+
+        <!-- Tab Navigation -->
+        <div id="tabs" class="flex flex-wrap justify-center gap-2 sm:gap-4 mb-8">
+            <button class="tab-button active text-base md:text-lg font-medium py-3 px-6 bg-white text-gray-700 rounded-full shadow-md hover:bg-gray-100" data-tab="intro">Εισαγωγή & Ποικιλότητα</button>
+            <button class="tab-button text-base md:text-lg font-medium py-3 px-6 bg-white text-gray-700 rounded-full shadow-md hover:bg-gray-100" data-tab="microscopy">Το Κύτταρο στο Μικροσκόπιο</button>
+            <button class="tab-button text-base md:text-lg font-medium py-3 px-6 bg-white text-gray-700 rounded-full shadow-md hover:bg-gray-100" data-tab="prokaryotes">Προκαρυωτικά Κύτταρα</button>
+            <button class="tab-button text-base md:text-lg font-medium py-3 px-6 bg-white text-gray-700 rounded-full shadow-md hover:bg-gray-100" data-tab="eukaryotes">Ευκαρυωτικά Κύτταρα</button>
+            <button class="tab-button text-base md:text-lg font-medium py-3 px-6 bg-white text-gray-700 rounded-full shadow-md hover:bg-gray-100" data-tab="models">Οργανισμοί-Πρότυπα</button>
+        </div>
+
+        <!-- Content Area -->
+        <main>
+            <!-- Introduction & Diversity Content -->
+            <div id="intro" class="tab-content active content-card">
+                <h2>Ομοιότητα και Ποικιλότητα των Κυττάρων</h2>
+                <p>Όλοι οι ζωντανοί οργανισμοί αποτελούνται από κύτταρα, τις θεμελιώδεις μονάδες της ζωής. Παρά την τεράστια ποικιλομορφία τους σε μέγεθος, σχήμα και λειτουργία, όλα τα κύτταρα μοιράζονται μια κοινή βασική χημεία και εξελικτική προέλευση.</p>
+
+                <h3>Η Ποικιλότητα των Κυττάρων</h3>
+                <p>Τα κύτταρα παρουσιάζουν εκπληκτική ποικιλία. Το μέγεθός τους κυμαίνεται από λίγα μικρόμετρα (βακτήρια) έως ένα χιλιοστό (ωάριο βατράχου). Τα σχήματά τους είναι εξίσου ποικίλα: από τις εκτεταμένες αποφυάδες ενός νευρικού κυττάρου μέχρι το σταθερό, πρισματικό σχήμα ενός φυτικού κυττάρου.</p>
+                <figure>
+                    <div class="image-placeholder w-full h-64">Εικόνα 1-1: Παραδείγματα της ποικιλίας των κυτταρικών σχημάτων (π.χ., νευρώνας, Paramecium, φυτικά κύτταρα).</div>
+                    <figcaption>Η ποικιλομορφία των κυτταρικών σχημάτων αντανακλά την εξειδίκευση των λειτουργιών τους.</figcaption>
+                </figure>
+                
+                <h3>Η Θεμελιώδης Ομοιότητα των Κυττάρων</h3>
+                <p>Παρά τις διαφορές τους, όλα τα κύτταρα λειτουργούν με βάση τις ίδιες θεμελιώδεις αρχές:</p>
+                <ul>
+                    <li><strong>Κεντρικό Δόγμα:</strong> Η γενετική πληροφορία αποθηκεύεται στο DNA, μεταγράφεται σε RNA και μεταφράζεται σε πρωτεΐνες. Αυτή η ροή πληροφορίας (DNA → RNA → Πρωτεΐνη) είναι καθολική.</li>
+                    <li><strong>Κοινή Χημεία:</strong> Όλα τα κύτταρα χρησιμοποιούν το ίδιο σύνολο 20 αμινοξέων για να συνθέσουν τις πρωτεΐνες τους, οι οποίες καταλύουν τις ίδιες βασικές χημικές αντιδράσεις.</li>
+                    <li><strong>Κοινή Καταγωγή:</strong> Η εντυπωσιακή ομοιότητα σε μοριακό επίπεδο υποδηλώνει ότι όλα τα σημερινά κύτταρα εξελίχθηκαν από έναν κοινό πρόγονο, περίπου 3.5-3.8 δισεκατομμύρια χρόνια πριν. Η εξέλιξη, μέσω τυχαίων μεταλλάξεων και φυσικής επιλογής, οδήγησε στη σημερινή ποικιλότητα της ζωής.</li>
+                </ul>
+                <figure>
+                    <img src="https://placehold.co/600x200/E9D5FF/3730A3?text=DNA+%E2%86%92+RNA+%E2%86%92+%CE%A0%CE%A1%CE%A9%CE%A4%CE%95%CE%AA%CE%9D%CE%97" alt="Κεντρικό Δόγμα της Βιολογίας" class="mx-auto rounded-lg shadow-md">
+                    <figcaption>Εικόνα 1-2: Το Κεντρικό Δόγμα. Η ροή της γενετικής πληροφορίας είναι μια θεμελιώδης αρχή για όλες τις μορφές ζωής.</figcaption>
+                </figure>
+            </div>
+
+            <!-- Microscopy Content -->
+            <div id="microscopy" class="tab-content content-card">
+                <h2>Το Κύτταρο στο Μικροσκόπιο</h2>
+                <p>Η ανακάλυψη και η μελέτη των κυττάρων κατέστη δυνατή μόνο μετά την εφεύρεση του μικροσκοπίου. Η παρατήρηση παραμένει ένα θεμελιώδες εργαλείο στην κυτταρική βιολογία.</p>
+                <ul>
+                    <li><strong>Φωτονικό Μικροσκόπιο:</strong> Χρησιμοποιεί ορατό φως για να μεγεθύνει τα κύτταρα έως και 1000 φορές, με διακριτική ικανότητα περίπου 0.2 μm. Επιτρέπει την παρατήρηση ζωντανών κυττάρων. Τεχνικές όπως η αντίθεση φάσης και η μικροσκοπία φθορισμού βελτιώνουν την ορατότητα των άχρωμων κυτταρικών δομών.</li>
+                    <li><strong>Ηλεκτρονικό Μικροσκόπιο:</strong> Χρησιμοποιεί δέσμες ηλεκτρονίων αντί για φως, επιτυγχάνοντας πολύ μεγαλύτερη μεγέθυνση και διακριτική ικανότητα (έως λίγα νανόμετρα). Επιτρέπει την απεικόνιση οργανιδίων και μακρομορίων. Τα δείγματα πρέπει να είναι μονιμοποιημένα και κομμένα σε εξαιρετικά λεπτές τομές, επομένως δεν μπορούν να παρατηρηθούν ζωντανά.</li>
+                </ul>
+                <figure>
+                    <div class="image-placeholder w-full h-64">Εικόνα 1-8: Ηλεκτρονιογράφημα ηπατικού κυττάρου που δείχνει οργανίδια όπως ο πυρήνας, τα μιτοχόνδρια και το ενδοπλασματικό δίκτυο.</div>
+                    <figcaption>Το ηλεκτρονικό μικροσκόπιο αποκαλύπτει την περίπλοκη εσωτερική αρχιτεκτονική του ευκαρυωτικού κυττάρου.</figcaption>
+                </figure>
+                <p>Η <strong>Κυτταρική Θεωρία</strong>, που διατυπώθηκε τον 19ο αιώνα από τους Schleiden και Schwann, βασίστηκε σε μικροσκοπικές παρατηρήσεις και θεμελίωσε ότι όλα τα έμβια όντα αποτελούνται από κύτταρα και ότι νέα κύτταρα προκύπτουν μόνο από τη διαίρεση προϋπαρχόντων κυττάρων.</p>
+            </div>
+            
+            <!-- Prokaryotes Content -->
+            <div id="prokaryotes" class="tab-content content-card">
+                <h2>Το Προκαρυωτικό Κύτταρο</h2>
+                <p>Τα προκαρυωτικά κύτταρα (βακτήρια και αρχαιοβακτήρια) είναι τα απλούστερα δομικά κύτταρα. Χαρακτηρίζονται από την απουσία πυρήνα και άλλων μεμβρανικών οργανιδίων.</p>
+                <h3>Δομή και Χαρακτηριστικά</h3>
+                <ul>
+                    <li><strong>Δομή:</strong> Συνήθως αποτελούνται από ένα κυτταρικό τοίχωμα, την πλασματική μεμβράνη και το κυτταρόπλασμα, το οποίο περιέχει το DNA σε μια περιοχή που ονομάζεται πυρηνοειδές, χωρίς να περιβάλλεται από μεμβράνη.</li>
+                    <li><strong>Ποικιλότητα:</strong> Παρά τη δομική τους απλότητα, οι προκαρυώτες είναι η πιο ποικιλόμορφη και πολυάριθμη ομάδα οργανισμών. Μπορούν να ζήσουν σε ακραία περιβάλλοντα και να αξιοποιήσουν σχεδόν οποιαδήποτε πηγή ενέργειας, από το ηλιακό φως (φωτοσύνθεση) έως ανόργανες χημικές ενώσεις.</li>
+                </ul>
+                <h3>Οι Δύο Επικράτειες</h3>
+                <p>Οι προκαρυώτες χωρίζονται σε δύο μεγάλες εξελικτικές επικράτειες:</p>
+                <ul>
+                    <li><strong>Ευβακτήρια (Eubacteria):</strong> Περιλαμβάνουν τα περισσότερα γνωστά βακτήρια, όπως το *E. coli* που ζει στο έντερό μας.</li>
+                    <li><strong>Αρχαιοβακτήρια (Archaea):</strong> Συχνά βρίσκονται σε ακραία περιβάλλοντα (π.χ., θερμές πηγές, υπεράλμυρες λίμνες) που μοιάζουν με τις συνθήκες της πρώιμης Γης.</li>
+                </ul>
+                 <figure>
+                    <img src="https://placehold.co/600x300/F3F4F6/1F2937?text=%CE%97%CE%BB%CE%B5%CE%BA%CF%84%CF%81%CE%BF%CE%BD%CE%B9%CE%BF%CE%B3%CF%81%CE%AC%CF%86%CE%B7%CE%BC%CE%B1+E.+coli" alt="Ηλεκτρονιογράφημα E. coli" class="mx-auto rounded-lg shadow-md">
+                    <figcaption>Εικόνα 1-11: Το βακτήριο *Escherichia coli*, ένας προκαρυωτικός οργανισμός-πρότυπο. Το DNA του βρίσκεται στην ανοιχτόχρωμη περιοχή (πυρηνοειδές).</figcaption>
+                </figure>
+            </div>
+
+            <!-- Eukaryotes Content -->
+            <div id="eukaryotes" class="tab-content content-card">
+                <h2>Το Ευκαρυωτικό Κύτταρο</h2>
+                <p>Τα ευκαρυωτικά κύτταρα είναι μεγαλύτερα και πολύ πιο πολύπλοκα από τα προκαρυωτικά. Το κύριο χαρακτηριστικό τους είναι η παρουσία του <strong>πυρήνα</strong> και ενός εκτεταμένου συστήματος εσωτερικών μεμβρανών που δημιουργούν εξειδικευμένα διαμερίσματα, τα <strong>οργανίδια</strong>.</p>
+                <h3>Κύρια Οργανίδια και Λειτουργίες</h3>
+                <ul>
+                    <li><strong>Πυρήνας:</strong> Περιέχει το γενετικό υλικό (DNA) του κυττάρου, οργανωμένο σε χρωμοσώματα. Περιβάλλεται από διπλή μεμβράνη, το πυρηνικό περίβλημα.</li>
+                    <li><strong>Μιτοχόνδρια:</strong> Είναι οι "ενεργειακές μονάδες" του κυττάρου. Πραγματοποιούν την κυτταρική αναπνοή, οξειδώνοντας μόρια τροφής για να παράγουν ATP. Πιστεύεται ότι προήλθαν από συμβιωτικά βακτήρια.</li>
+                    <li><strong>Χλωροπλάστες (σε φυτά και φύκη):</strong> Πραγματοποιούν τη φωτοσύνθεση, δεσμεύοντας την ηλιακή ενέργεια για τη σύνθεση σακχάρων. Όπως και τα μιτοχόνδρια, έχουν συμβιωτική προέλευση.</li>
+                    <li><strong>Ενδοπλασματικό Δίκτυο (ΕΔ):</strong> Ένας λαβύρινθος μεμβρανών όπου συντίθενται οι περισσότερες μεμβράνες και πρωτεΐνες προς εξαγωγή.</li>
+                    <li><strong>Σύμπλεγμα Golgi:</strong> Τροποποιεί, ταξινομεί και συσκευάζει τα μόρια που προέρχονται από το ΕΔ.</li>
+                    <li><strong>Λυσοσώματα:</strong> Περιέχουν πεπτικά ένζυμα για την αποικοδόμηση ανεπιθύμητων υλικών.</li>
+                    <li><strong>Κυτταροδιάλυμα:</strong> Το υδατικό περιεχόμενο του κυττάρου εκτός των οργανιδίων. Είναι ένα πυκνό διάλυμα όπου λαμβάνουν χώρα πολλές μεταβολικές αντιδράσεις.</li>
+                    <li><strong>Κυτταροσκελετός:</strong> Ένα δίκτυο πρωτεϊνικών ινιδίων (ινίδια ακτίνης, μικροσωληνίσκοι, ενδιάμεσα ινίδια) που προσδίδει στο κύτταρο σχήμα, μηχανική αντοχή και την ικανότητα κίνησης.</li>
+                </ul>
+                <figure>
+                    <div class="image-placeholder w-full h-64">Εικόνα 1-27: Ο κυτταροσκελετός. Απεικόνιση των τριών τύπων ινιδίων με φθορισμό.</div>
+                    <figcaption>Ο κυτταροσκελετός είναι υπεύθυνος για τη δομή και την κίνηση του κυττάρου.</figcaption>
+                </figure>
+            </div>
+
+            <!-- Model Organisms Content -->
+            <div id="models" class="tab-content content-card">
+                <h2>Οργανισμοί-Πρότυπα</h2>
+                <p>Λόγω της κοινής εξελικτικής καταγωγής, οι θεμελιώδεις κυτταρικές διεργασίες είναι διατηρημένες. Αυτό επιτρέπει στους βιολόγους να μελετούν απλούστερους οργανισμούς για να κατανοήσουν τις αρχές που διέπουν και πιο σύνθετους, όπως τον άνθρωπο.</p>
+                <h3>Κύριοι Οργανισμοί-Πρότυπα</h3>
+                <ul>
+                    <li><strong>*Escherichia coli* (Βακτήριο):</strong> Ο πιο καλά μελετημένος προκαρυώτης. Η μελέτη του αποκάλυψε θεμελιώδεις μηχανισμούς όπως η αντιγραφή του DNA και η πρωτεϊνοσύνθεση.</li>
+                    <li><strong>*Saccharomyces cerevisiae* (Ζυμομύκητας):</strong> Ένα απλό, μονοκύτταρο ευκαρυωτικό κύτταρο. Ιδανικό για τη μελέτη βασικών ευκαρυωτικών διεργασιών, όπως ο κυτταρικός κύκλος. Πολλά γονίδιά του είναι λειτουργικά ισοδύναμα με τα ανθρώπινα.</li>
+                    <li><strong>*Arabidopsis thaliana* (Φυτό):</strong> Ένα μικρό ζιζάνιο που χρησιμοποιείται ως πρότυπο για τη μελέτη της βιολογίας των φυτών.</li>
+                    <li><strong>*Drosophila melanogaster* (Μύγα των φρούτων):</strong> Κλασικός οργανισμός για τη γενετική και την αναπτυξιακή βιολογία. Η μελέτη της αποκάλυψε τους γενετικούς μηχανισμούς που ελέγχουν την ανάπτυξη ενός πολυκύτταρου οργανισμού.</li>
+                    <li><strong>*Caenorhabditis elegans* (Νηματώδης σκώληκας):</strong> Ένας απλός, διαφανής πολυκύτταρος οργανισμός με σταθερό αριθμό κυττάρων (959). Η ανάπτυξή του έχει χαρτογραφηθεί πλήρως, προσφέροντας γνώσεις για τον προγραμματισμένο κυτταρικό θάνατο (απόπτωση).</li>
+                    <li><strong>Ποντικός και Άνθρωπος:</strong> Ο ποντικός είναι το κύριο πρότυπο για τα θηλαστικά, καθώς σχεδόν κάθε ανθρώπινο γονίδιο έχει ένα ομόλογο στον ποντικό. Η μελέτη ανθρώπινων κυττάρων σε καλλιέργεια και οι γενετικές ασθένειες παρέχουν άμεσες πληροφορίες για την ανθρώπινη βιολογία.</li>
+                </ul>
+                <figure>
+                    <img src="https://placehold.co/600x300/FEF2F2/991B1B?text=%CE%9F%CE%B9%CE%BA%CE%BF%CE%B3%CE%AD%CE%BD%CE%B5%CE%B9%CE%B1+%CE%96%CF%89%CE%AE%CF%82" alt="Εξελικτικό Δέντρο" class="mx-auto rounded-lg shadow-md">
+                    <figcaption>Εικόνα 1-29: Η σύγκριση των γονιδιωμάτων αποκαλύπτει τις εξελικτικές σχέσεις και την κοινή καταγωγή όλων των μορφών ζωής.</figcaption>
+                </figure>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const tabs = document.querySelectorAll('.tab-button');
+            const tabContents = document.querySelectorAll('.tab-content');
+
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    // Deactivate all tabs and hide all content
+                    tabs.forEach(t => t.classList.remove('active'));
+                    tabContents.forEach(c => c.classList.remove('active'));
+
+                    // Activate the clicked tab and show its content
+                    tab.classList.add('active');
+                    const targetContent = document.getElementById(tab.dataset.tab);
+                    if (targetContent) {
+                        targetContent.classList.add('active');
+                    }
+                });
+            });
+        });
+    </script>
+
+</body>
+</html>
