@@ -6,3 +6,4 @@
 4. [Ενδοκυττάρια - Διαμεμβρανική μεταφορά - Επικοινωνία ](endokitaria-memvraniki-metafora.html)
 5. [Εξερευνώντας το κύτταρο](exerevnontas-to-kitaro.html)
 6. [Ηλεκτρικές Ιδιότητες Μεμβρανών](ilektrikes-idiotites-memvranon.html)
+7. [Πρωτεϊνική διαλογή και μεταφορά](proteiniki-diaologi-metafora.html)
