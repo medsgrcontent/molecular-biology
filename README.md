@@ -5,3 +5,4 @@
 3. [Τεχνικές μελέτης των κυττάρων](optikopoiontas-ta-kittara.html)
 4. [Ενδοκυττάρια - Διαμεμβρανική μεταφορά - Επικοινωνία ](endokitaria-memvraniki-metafora.html)
 5. [Εξερευνώντας το κύτταρο](exerevnontas-to-kitaro.html)
+6. [Ηλεκτρικές Ιδιότητες Μεμβρανών](ilektrikes-idiotites-memvranon.html)
